@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('owner_id')->constrained('users')->onDelete('cascade');
             $table->string('name');
             $table->string('type');
-            $table->string('breed');
+            $table->string('breed')->nullable();
             $table->date('date_of_birth');
             $table->float('weight', 4, 2)->nullable();
             $table->timestamps();
