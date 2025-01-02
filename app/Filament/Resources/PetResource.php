@@ -14,6 +14,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 
 class PetResource extends Resource
 {
@@ -47,19 +48,13 @@ class PetResource extends Resource
                 ->step(0.01)
                 ->numeric(),
                 Forms\Components\Select::make('owner_id')
-                /** @disregard P1013 Undefined method. */
-                ->hidden(!auth()->user()->isAdmin() && !auth()->user()->isVet()) 
+                ->hidden(!Auth::user()->isAdmin() && !Auth::user()->isVet()) 
                 ->relationship('owner', 'name', function (Builder $query) {
                     return $query->where('role', RoleUsers::User);
                 })
                 ->required(),
-                Forms\Components\Textarea::make('observations')
-                ->label('Observaciones')
-                ->rows(3)
-                ->placeholder('Escribe aquí las observaciones...'),
             ]);
     }
-
     public static function table(Table $table): Table
     {
         return $table
