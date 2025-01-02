@@ -9,6 +9,13 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Enums\RoleUsers as Role;
 
+/**
+ * @property Role $role
+ * @method bool isAdmin()
+ * @method bool isVet()
+ * @method bool isOwner()
+ */
+
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
@@ -67,18 +74,32 @@ class User extends Authenticatable
     }
 
     // helpers para verificar roles
+        /**
+     * Check if the user is an Admin.
+     *
+     * @return bool
+     */
     public function isAdmin(): bool
     {
-        return $this->role->value === Role::Admin;
+        return $this->role->value === Role::Admin->value;
     }
-    
+    /**
+     * Check if the user is a Vet.
+     *
+     * @return bool
+     */
     public function isVet(): bool
     {
-        return $this->role->value === Role::Vet;
+        return $this->role->value === Role::Vet->value;
     }
+    /**
+     * Check if the user is an Owner.
+     *
+     * @return bool
+     */
     
     public function isOwner(): bool
     {
-        return $this->role->value === Role::User;
+        return $this->role->value === Role::User->value;
     }  
 }
