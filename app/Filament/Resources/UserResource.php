@@ -8,6 +8,7 @@ use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use App\Enums\RoleUsers;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -73,6 +74,10 @@ class UserResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('role')
                     ->label('Rol')
+                    ->formatStateUsing(function ($state) {
+                        return $state->value === RoleUsers::Admin->value ? 'Admin' : ($state->value === RoleUsers::Vet->value ? 'Veterinario' : 'Cliente');
+                    })
+                    ->sortable(),
             ])
             ->filters([
                 //

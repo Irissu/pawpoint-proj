@@ -42,6 +42,7 @@ class PetResource extends Resource
                 ->label('Raza'),
                 Forms\Components\Datepicker::make('date_of_birth')
                 ->label('Nacimiento')
+                ->required()
                 ->maxDate(now()),
                 Forms\Components\TextInput::make('weight')
                 ->label('Peso')
@@ -49,9 +50,37 @@ class PetResource extends Resource
                 ->numeric(),
                 Forms\Components\Select::make('owner_id')
                 ->hidden(!Auth::user()->isAdmin() && !Auth::user()->isVet()) 
-                ->relationship('owner', 'name', function (Builder $query) {
+                ->relationship('owner', 'name', function (Builder $query) { // solo muestra los dueños, unicos que pueden tener mascotas
                     return $query->where('role', RoleUsers::User);
-                })
+                }) 
+                ->searchable()
+                ->preload() // carga los datos de la relación, si hay pocos datos esta bien, si hay muchos datos es mejor no usarlo. De momento lo dejo así
+                ->createOptionForm([
+                    Forms\Components\TextInput::make('name')
+                    ->label('Nombre')
+                    ->minLength(2)
+                    ->maxLength(50)
+                    ->required(),
+                    Forms\Components\TextInput::make('surname')
+                    ->label('Apellidos')
+                    ->required(),
+                    Forms\Components\TextInput::make('email')
+                    ->required(),
+                    Forms\Components\TextInput::make('password')
+                    ->password()
+                    ->revealable()
+                    ->required(),
+                    Forms\Components\TextInput::make('phone')
+                    ->label('Teléfono')
+                    ->numeric()
+                    ->length(9)
+                    ->required(),
+                    Forms\Components\TextInput::make('address')
+                    ->label('Dirección'),
+                    // rol automaticamente owner
+                    Forms\Components\Hidden::make('role')
+                    ->default(RoleUsers::User),
+                ])
                 ->required(),
             ]);
     }
@@ -64,7 +93,10 @@ class PetResource extends Resource
                 ->searchable(),
                 Tables\Columns\TextColumn::make('type')
                 ->label('Tipo')
-                ->sortable(),
+                ->sortable()
+                ->formatStateUsing(function ($state) {
+                    return $state === 'dog' ? 'Perro' : 'Gato';
+                }),
                 Tables\Columns\TextColumn::make('breed')
                 ->label('Raza'),
                 Tables\Columns\TextColumn::make('owner.name') // solo debería ser visible para admin y vet
