@@ -19,8 +19,9 @@ use Illuminate\Support\Facades\Auth;
 class PetResource extends Resource
 {
     protected static ?string $model = Pet::class;
-
+    protected static ?string $navigationLabel = 'Mascotas';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {
@@ -36,6 +37,7 @@ class PetResource extends Resource
                     'dog' => 'Perro',
                     'cat' => 'Gato',
                 ])
+                ->native(false)
                 ->label('Tipo')
                 ->required(),
                 Forms\Components\TextInput::make('breed')
@@ -104,7 +106,11 @@ class PetResource extends Resource
                 ->searchable(),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('type')
+                ->options([
+                    'dog' => 'Perro',
+                    'cat' => 'Gato',
+                ]),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

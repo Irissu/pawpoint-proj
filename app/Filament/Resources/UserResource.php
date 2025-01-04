@@ -13,12 +13,14 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\public\storage;
 
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
-
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationLabel = 'Usuarios';
+    protected static ?string $navigationIcon = 'heroicon-o-user-circle';
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
@@ -37,6 +39,7 @@ class UserResource extends Resource
             Forms\Components\TextInput::make('password')
                 ->password()
                 ->revealable()
+                ->hiddenOn('edit')
                 ->required(),
             Forms\Components\TextInput::make('phone')
                 ->label('Teléfono')
@@ -56,6 +59,10 @@ class UserResource extends Resource
                 ->label('Rol')
                 ->default('owner')
                 ->required(),
+                Forms\Components\FileUpload::make('img_path')
+                ->label('Avatar')
+                ->image()
+                ->imageEditor()
             ]);
     }
 
@@ -63,6 +70,13 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\ImageColumn::make('img_path')
+                    ->label('Avatar')
+                    ->width(60)
+                    ->height(60)
+                    // quiero ir a esta carpeta en defaultImage: [C:\xampp\htdocs\pawpointproj\public\storage]
+                    ->defaultImageUrl(url(asset('storage/default-user.jpg')))
+                    ->circular(),
                 Tables\Columns\TextColumn::make('name')
                 ->label('Nombre')
                     ->searchable(),

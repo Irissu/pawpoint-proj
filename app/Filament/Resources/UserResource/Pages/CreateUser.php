@@ -9,4 +9,9 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateUser extends CreateRecord
 {
     protected static string $resource = UserResource::class;
+
+    protected function getRedirectUrl(): string // This method is used to redirect the user to the index page after editing a record
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }

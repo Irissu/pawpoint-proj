@@ -21,4 +21,9 @@ class CreatePet extends CreateRecord
 
         return $data;
     }
+
+    protected function getRedirectUrl(): string // This method is used to redirect the user to the index page after editing a record
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }
