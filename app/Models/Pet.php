@@ -38,6 +38,15 @@ class Pet extends Model
 {
     use HasFactory;
 
+    protected  $fillable = [
+        'owner_id',
+        'name',
+        'type',
+        'breed',
+        'date_of_birth',
+        'weight',
+    ];
+
     public function owner()
     {
         return $this->belongsTo(User::class, 'owner_id');
@@ -46,5 +55,15 @@ class Pet extends Model
     public function appointments()
     {
         return $this->hasMany(Appointment::class);
+    }
+
+    protected static function booted() {
+        // validate the pet type
+        static::saving(function ($pet) {
+            if (!in_array($pet->type, ['dog', 'cat'], true)) {
+                throw new \Exception('Invalid pet type');
+            }
+        });
+
     }
 }

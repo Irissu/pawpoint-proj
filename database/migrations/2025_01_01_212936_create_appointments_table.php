@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('owner_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('pet_id')->constrained('pets')->onDelete('cascade');
             $table->foreignId('slot_id')->constrained('slots')->onDelete('cascade');
-            $table->string('status');
+            $table->string('status')->default('pending');
             $table->text('description')->nullable();
             $table->timestamps();
         });

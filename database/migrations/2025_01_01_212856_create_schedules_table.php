@@ -11,14 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('slots', function (Blueprint $table) {
+        Schema::create('schedules', function (Blueprint $table) {
             $table->id();
             $table->foreignId('vet_id')->constrained('users')->onDelete('cascade');
-            $table->date('date');
+            $table->unSignedTinyInteger('day_of_week')->check('day_of_week >= 0 and day_of_week <= 6');
             $table->time('start_time');
             $table->time('end_time');
-            $table->string('status')->default('available');
-            $table->foreignId('schedule_id')->constrained('schedules'); // creo que aqui no va onDelete('cascade')
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('slots');
+        Schema::dropIfExists('schedules');
     }
 };

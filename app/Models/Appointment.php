@@ -44,6 +44,15 @@ class Appointment extends Model
         'status' => AppointmentStatus::class,
     ];
 
+    protected $fillable = [
+        'vet_id',
+        'owner_id',
+        'pet_id',
+        'slot_id',
+        'status',
+        'description',
+    ];
+
     // relaciones
 
     public function ownerUser()
@@ -66,4 +75,14 @@ class Appointment extends Model
     {
         return $this->belongsTo(Pet::class);
     }
+
+    protected static function booted()
+{
+    static::saving(function ($appointment) {
+        if (Appointment::where('slot_id', $appointment->slot_id)->where('status', 'booked')->exists()) {
+            throw new \InvalidArgumentException('Slot is already booked.');
+        }
+    });
+}
+
 }

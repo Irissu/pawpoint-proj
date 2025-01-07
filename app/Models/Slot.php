@@ -42,14 +42,35 @@ class Slot extends Model
         'end_time' => 'time',
         'status' => SlotStatus::class,
     ];
+    protected $fillable = [
+        'vet_id',
+        'date',
+        'start_time',
+        'end_time',
+        'status',
+        'schedule_id',
+    ];
 
     public function vet()
     {
         return $this->belongsTo(User::class, 'vet_id');
     }
 
-    public function appointments()
+    public function appointment()
     {
         return $this->hasOne(Appointment::class);
     }
+
+    public function schedule()
+    {
+        return $this->belongsTo(Schedule::class);
+    }
+    protected static function booted()
+{
+    static::saving(function ($slot) {
+        if ($slot->start_time >= $slot->end_time) {
+            throw new \InvalidArgumentException('Start time must be before end time.');
+        }
+    });
+}
 }

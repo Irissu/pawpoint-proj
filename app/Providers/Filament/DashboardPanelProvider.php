@@ -27,6 +27,7 @@ class DashboardPanelProvider extends PanelProvider
             ->id('dashboard')
             ->path('dashboard')
             ->login()
+            ->passwordReset()
             ->brandName('Pawpoint')
             ->colors([
                 'primary' => Color::Teal,

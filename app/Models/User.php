@@ -73,8 +73,14 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'surname',
         'email',
         'password',
+        'phone',
+        'address',
+        'bio',
+        'role',
+        'img_path',
     ];
 
     /**
@@ -148,4 +154,15 @@ class User extends Authenticatable
     {
         return $this->role->value === Role::User->value;
     }  
+
+/*     protected static function booted()
+    {
+        static::saving(function ($user) {
+            $allowedRoles = ['Admin', 'Vet', 'User'];
+            if (!in_array($user->role->value, $allowedRoles, true)) {
+                throw new \InvalidArgumentException('Invalid role assigned to user.');
+            }
+        });
+    } */
+
 }
