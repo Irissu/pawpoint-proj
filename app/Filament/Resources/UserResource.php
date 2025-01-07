@@ -19,6 +19,8 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
     protected static ?string $navigationLabel = 'Usuarios';
+    protected static ?string $modelLabel = 'Usuario';
+    protected static ?string $pluralmodelLabel = 'Usuarios';
     protected static ?string $navigationIcon = 'heroicon-o-user-circle';
     protected static ?int $navigationSort = 2;
 
@@ -91,6 +93,7 @@ class UserResource extends Resource
                     ->formatStateUsing(function ($state) {
                         return $state->value === RoleUsers::Admin->value ? 'Admin' : ($state->value === RoleUsers::Vet->value ? 'Veterinario' : 'Cliente');
                     })
+                    ->badge()
                     ->sortable(),
             ])
             ->filters([

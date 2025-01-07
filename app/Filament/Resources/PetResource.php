@@ -20,6 +20,8 @@ class PetResource extends Resource
 {
     protected static ?string $model = Pet::class;
     protected static ?string $navigationLabel = 'Mascotas';
+    protected static ?string $modelLabel = 'Mascota';
+    protected static ?string $pluralmodelLabel = 'Mascotas';
     protected static ?string $navigationIcon = 'heroicon-o-heart';
     protected static ?int $navigationSort = 3;
 
@@ -96,6 +98,11 @@ class PetResource extends Resource
                 Tables\Columns\TextColumn::make('type')
                 ->label('Tipo')
                 ->sortable()
+                ->badge()
+                ->color(fn (string $state): string => match ($state) {
+                    'dog' => 'danger',
+                    'cat' => 'info',
+                })
                 ->formatStateUsing(function ($state) {
                     return $state === 'dog' ? 'Perro' : 'Gato';
                 }),

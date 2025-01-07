@@ -31,7 +31,4 @@ class Schedule extends Model
     {
         return $this->hasMany(Slot::class);
     }
-
-
-
 }
