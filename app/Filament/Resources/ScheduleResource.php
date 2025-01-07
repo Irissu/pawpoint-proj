@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\AppointmentResource\Pages;
-use App\Filament\Resources\AppointmentResource\RelationManagers;
-use App\Models\Appointment;
+use App\Filament\Resources\ScheduleResource\Pages;
+use App\Filament\Resources\ScheduleResource\RelationManagers;
+use App\Models\Schedule;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,14 +13,15 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class AppointmentResource extends Resource
+class ScheduleResource extends Resource
 {
-    protected static ?string $model = Appointment::class;
-    protected static ?string $navigationLabel = 'Citas';
-    protected static ?string $modelLabel = 'Cita';
-    protected static ?string $pluralmodelLabel = 'Citas';
-    protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
-    protected static ?int $navigationSort = 5;
+    protected static ?string $model = Schedule::class;
+
+    protected static ?string $navigationIcon = 'heroicon-o-clock';
+    protected static ?int $navigationSort = 4;
+    protected static ?string $navigationLabel = 'Horarios';
+    protected static ?string $modelLabel = 'Horario';
+    protected static ?string $pluralmodelLabel = 'Horarios';
 
     public static function form(Form $form): Form
     {
@@ -59,9 +60,9 @@ class AppointmentResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListAppointments::route('/'),
-            'create' => Pages\CreateAppointment::route('/create'),
-            'edit' => Pages\EditAppointment::route('/{record}/edit'),
+            'index' => Pages\ListSchedules::route('/'),
+            'create' => Pages\CreateSchedule::route('/create'),
+            'edit' => Pages\EditSchedule::route('/{record}/edit'),
         ];
     }
 }

@@ -16,9 +16,9 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class SlotResource extends Resource
 {
     protected static ?string $model = Slot::class;
-    protected static ?string $navigationLabel = 'Horarios';
-    protected static ?string $navigationIcon = 'heroicon-o-clock';
-    protected static ?int $navigationSort = 4;
+    protected static ?string $navigationLabel = 'Slots';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?int $navigationSort = 6;
 
     public static function form(Form $form): Form
     {
