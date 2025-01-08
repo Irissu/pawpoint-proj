@@ -51,14 +51,24 @@ class ScheduleResource extends Resource
                 Forms\Components\TimePicker::make('start_time')
                 ->label('Hora de inicio')
                 ->seconds(false)
-                ->rule('regex:/^(?:[01]\d|2[0-3]):(?:00|30)$/')
+                /* ->rule('regex:/^(?:[01]\d|2[0-3]):(?:00|30)$/') - solo valida que sea en punto o y media */
+                ->rule('regex:/^(1[0-7]|10|18):(00|30)$/')
                 ->helperText('Las horas deben ser en punto o y media (ej: 10:00 o 15:30)')
+                ->validationMessages([
+                    'regex' => 'El horario de apertura es de 10 a 18.
+                     Deben ser franjas horarias a en punto o y media',
+                ])
                 ->required(),
                 Forms\Components\TimePicker::make('end_time')
                 ->label('Hora de fin')
                 ->seconds(false)
-                ->rule('regex:/^(?:[01]\d|2[0-3]):(?:00|30)$/')
+                /* ->rule('regex:/^(?:[01]\d|2[0-3]):(?:00|30)$/') - solo valida que sea en punto o y media */
+                ->rule('regex:/^(1[0-7]|10|18):(00|30)$/')
                 ->helperText('Las horas deben ser en punto o y media (ej: 10:00 o 15:30)')
+                ->validationMessages([
+                    'regex' => 'El horario de apertura es de 10 a 18.
+                     Deben ser franjas horarias a en punto o y media',
+                ])
                 ->required(),
                 Forms\Components\Toggle::make('is_active')
                 ->label('Activo')
