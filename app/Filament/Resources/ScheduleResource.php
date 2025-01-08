@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\RoleUsers;
 use App\Filament\Resources\ScheduleResource\Pages;
 use App\Filament\Resources\ScheduleResource\RelationManagers;
 use App\Models\Schedule;
@@ -12,6 +13,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 
 class ScheduleResource extends Resource
 {
@@ -26,22 +28,87 @@ class ScheduleResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
+        /* Si es un veterinario el que está logueado (role 'vet'): se le asigna su ID. Si es admin(role: 'admin'): debe poder escoger el veterinario al que asignarle el horario
+        Si es un dueño (role: 'owner') en principio de momento lo dejo así, pero este resource no debería siquiera poder verlo. Puedo hacer algo donde ponga "No esta autorizado para ver este contenido" */
             ->schema([
-                //
+                Forms\Components\Select::make('vet_id')
+                ->hidden(fn () => !Auth::user()->isAdmin()) // si no es admin, no se muestra
+                ->label('Veterinario')
+                ->relationship('vet', 'name', function (Builder $query) {
+                    return $query->where('role', RoleUsers::Vet);
+                })
+                ->required(fn () => Auth::user()->isAdmin()), // Solo requerido si es admin
+                Forms\Components\Select::make('day_of_week')
+                ->label('Día de la semana')
+                ->options([
+                    0 => 'Lunes',
+                    1 => 'Martes',
+                    2 => 'Miércoles',
+                    3 => 'Jueves',
+                    4 => 'Viernes'
+                ])
+                ->required(),
+                Forms\Components\TimePicker::make('start_time')
+                ->label('Hora de inicio')
+                ->seconds(false)
+                ->rule('regex:/^(?:[01]\d|2[0-3]):(?:00|30)$/')
+                ->helperText('Las horas deben ser en punto o y media (ej: 10:00 o 15:30)')
+                ->required(),
+                Forms\Components\TimePicker::make('end_time')
+                ->label('Hora de fin')
+                ->seconds(false)
+                ->rule('regex:/^(?:[01]\d|2[0-3]):(?:00|30)$/')
+                ->helperText('Las horas deben ser en punto o y media (ej: 10:00 o 15:30)')
+                ->required(),
+                Forms\Components\Toggle::make('is_active')
+                ->label('Activo')
+                ->default(true),
             ]);
     }
-
+ 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('vet.name')
+                ->label('Veterinario')
+                ->searchable()
+                ->sortable(),
+                Tables\Columns\TextColumn::make('day_of_week')
+                ->label('Día de la semana')
+                ->formatStateUsing(function ($state) {
+                    return $state == 0 ? 'Lunes' : ($state == 1 ? 'Martes' : ($state == 2 ? 'Miércoles' : ($state == 3 ? 'Jueves' : 'Viernes')));
+                })
+                ->searchable()
+                ->sortable(),
+                Tables\Columns\TextColumn::make('start_time')
+                ->label('Hora de inicio')
+ /*                ->formatStateUsing(function ($state) {
+                    return \Carbon\Carbon::parse($state)->format('H:i');
+                }) */
+                ->dateTime()
+                ->searchable()
+                ->sortable(),
+                Tables\Columns\TextColumn::make('end_time')
+                ->label('Hora de fin')
+                ->formatStateUsing(function ($state) {
+                    return \Carbon\Carbon::parse($state)->format('H:i');
+                })
+                ->searchable()
+                ->sortable(),
+                Tables\Columns\IconColumn::make('is_active')
+            ->label('Activo')
+            ->boolean()
+
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                ->iconButton(),
+                Tables\Actions\DeleteAction::make()
+                ->iconButton(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

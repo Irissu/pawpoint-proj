@@ -29,6 +29,10 @@ class AppointmentResource extends Resource
                 //
             ]);
     }
+      /*
+   * Crear datepicker para seleccionar el dia
+   * añadir propiedad live() y radio options dinamicas para seleccionar el slot de la lista disponible para ese dia 
+   */
 
     public static function table(Table $table): Table
     {

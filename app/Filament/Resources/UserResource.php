@@ -14,6 +14,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\public\storage;
+use Illuminate\Support\Facades\Auth;
 
 class UserResource extends Resource
 {
@@ -90,6 +91,7 @@ class UserResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('role')
                     ->label('Rol')
+                    ->hidden(!Auth::user()->isAdmin() && !Auth::user()->isVet()) 
                     ->formatStateUsing(function ($state) {
                         return $state->value === RoleUsers::Admin->value ? 'Admin' : ($state->value === RoleUsers::Vet->value ? 'Veterinario' : 'Cliente');
                     })
@@ -100,7 +102,10 @@ class UserResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                ->iconButton(),
+                Tables\Actions\DeleteAction::make()
+                ->iconButton(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
