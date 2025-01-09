@@ -38,8 +38,6 @@ class Slot extends Model
 
     protected $casts = [
         'date' => 'date',
-        'start_time' => 'time',
-        'end_time' => 'time',
         'status' => SlotStatus::class,
     ];
     protected $fillable = [
@@ -66,11 +64,31 @@ class Slot extends Model
         return $this->belongsTo(Schedule::class);
     }
     protected static function booted()
-{
-    static::saving(function ($slot) {
-        if ($slot->start_time >= $slot->end_time) {
-            throw new \InvalidArgumentException('Start time must be before end time.');
-        }
-    });
-}
+    {
+        static::saving(function ($slot) {
+            if ($slot->start_time >= $slot->end_time) {
+                throw new \InvalidArgumentException('Start time must be before end time.');
+            }
+        });
+    }
+ // mutadores para convertir a Carbon si lo necesito.
+    public function getStartTimeAttribute($value)
+    {
+        return \Carbon\Carbon::createFromFormat('H:i:s', $value);
+    }
+
+    public function getEndTimeAttribute($value)
+    {
+        return \Carbon\Carbon::createFromFormat('H:i:s', $value);
+    }
+
+    public function setStartTimeAttribute($value)
+    {
+        $this->attributes['start_time'] = \Carbon\Carbon::parse($value)->format('H:i:s');
+    }
+
+    public function setEndTimeAttribute($value)
+    {
+        $this->attributes['end_time'] = \Carbon\Carbon::parse($value)->format('H:i:s');
+    }
 }

@@ -28,8 +28,6 @@ class ScheduleResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-        /* Si es un veterinario el que está logueado (role 'vet'): se le asigna su ID. Si es admin(role: 'admin'): debe poder escoger el veterinario al que asignarle el horario
-        Si es un dueño (role: 'owner') en principio de momento lo dejo así, pero este resource no debería siquiera poder verlo. Puedo hacer algo donde ponga "No esta autorizado para ver este contenido" */
             ->schema([
                 Forms\Components\Select::make('vet_id')
                 ->hidden(fn () => !Auth::user()->isAdmin()) // si no es admin, no se muestra
@@ -41,17 +39,16 @@ class ScheduleResource extends Resource
                 Forms\Components\Select::make('day_of_week')
                 ->label('Día de la semana')
                 ->options([
-                    0 => 'Lunes',
-                    1 => 'Martes',
-                    2 => 'Miércoles',
-                    3 => 'Jueves',
-                    4 => 'Viernes'
+                    1 => 'Lunes',
+                    2 => 'Martes',
+                    3 => 'Miércoles',
+                    4 => 'Jueves',
+                    5 => 'Viernes'
                 ])
                 ->required(),
                 Forms\Components\TimePicker::make('start_time')
                 ->label('Hora de inicio')
                 ->seconds(false)
-                /* ->rule('regex:/^(?:[01]\d|2[0-3]):(?:00|30)$/') - solo valida que sea en punto o y media */
                 ->rule('regex:/^(1[0-7]|10|18):(00|30)$/')
                 ->helperText('Las horas deben ser en punto o y media (ej: 10:00 o 15:30)')
                 ->validationMessages([
@@ -62,12 +59,13 @@ class ScheduleResource extends Resource
                 Forms\Components\TimePicker::make('end_time')
                 ->label('Hora de fin')
                 ->seconds(false)
-                /* ->rule('regex:/^(?:[01]\d|2[0-3]):(?:00|30)$/') - solo valida que sea en punto o y media */
                 ->rule('regex:/^(1[0-7]|10|18):(00|30)$/')
                 ->helperText('Las horas deben ser en punto o y media (ej: 10:00 o 15:30)')
+                ->after('start_time')
                 ->validationMessages([
                     'regex' => 'El horario de apertura es de 10 a 18.
                      Deben ser franjas horarias a en punto o y media',
+                    'after' => 'La hora de fin debe ser mayor que la hora de inicio',
                 ])
                 ->required(),
                 Forms\Components\Toggle::make('is_active')
@@ -93,7 +91,7 @@ class ScheduleResource extends Resource
                 ->sortable(),
                 Tables\Columns\TextColumn::make('start_time')
                 ->label('Hora de inicio')
- /*                ->formatStateUsing(function ($state) {
+       /*          ->formatStateUsing(function ($state) {
                     return \Carbon\Carbon::parse($state)->format('H:i');
                 }) */
                 ->dateTime()
@@ -101,9 +99,10 @@ class ScheduleResource extends Resource
                 ->sortable(),
                 Tables\Columns\TextColumn::make('end_time')
                 ->label('Hora de fin')
-                ->formatStateUsing(function ($state) {
+     /*            ->formatStateUsing(function ($state) {
                     return \Carbon\Carbon::parse($state)->format('H:i');
-                })
+                }) */
+                ->dateTime()
                 ->searchable()
                 ->sortable(),
                 Tables\Columns\IconColumn::make('is_active')

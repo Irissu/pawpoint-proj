@@ -2,11 +2,15 @@
 
 namespace App\Filament\Resources\ScheduleResource\Pages;
 
+use App\Enums\DaysOfTheWeek;
 use App\Filament\Resources\ScheduleResource;
+use Carbon\Carbon;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Facades\Auth;
 use Notification;
+use App\Models\Slot;
+use Illuminate\Support\Facades\Log;
 
 class CreateSchedule extends CreateRecord
 {
@@ -14,22 +18,92 @@ class CreateSchedule extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        if(Auth::user()->isVet()) {
+        if (Auth::user()->isVet()) {
             $data['vet_id'] = Auth::id();
         }
         return $data;
     }
 
     protected function beforeCreate(): void
-        {
-            if(!Auth::user()->isVet() && !Auth::user()->isAdmin()) {
-               Notification::make()
+    {
+        if (!Auth::user()->isVet() && !Auth::user()->isAdmin()) {
+            Notification::make()
                 ->title('Acceso denegado')
                 ->body('No tienes permisos para acceder a esta página')
                 ->warning()
                 ->send();
-                $this->halt();
-                $this->redirect('/');
-            }
+            $this->halt();
+            $this->redirect('/');
         }
     }
+
+    protected function afterCreate(): void
+    {
+
+        Carbon::setLocale('es');
+        // Configurar el primer día de la semana como lunes
+        $schedule = $this->record; 
+        // Día y hora actuales
+        $currentDay = now()->dayOfWeek; // 4
+        $currentTime = now();
+
+    
+        // Rango de tiempo del horario
+        $startTime = Carbon::parse($schedule->start_time); // recoge correctamente la hora que le paso
+        $endTime = Carbon::parse($schedule->end_time); // recoge correctamente la hora que le paso
+    
+        Log::info('Current Day: ' . $currentDay); // me devuelve 4
+        Log::info('Current Time: ' . $currentTime);
+        Log::info('Start Time: ' . $startTime);
+        Log::info('End Time: ' . $endTime);
+        Log::info('Schedule Day of Week: ' . $schedule->day_of_week); // me devuelve 3
+    
+        // Si el día actual coincide con el día del horario
+        if ($currentDay == $schedule->day_of_week) {
+            Log::info('Current day matches schedule day.');
+    
+            if ($currentTime->between($startTime, $endTime)) {
+                // Ajustar a la próxima hora válida dentro del rango
+                $adjustedStart = $currentTime->copy()->addMinutes(30 - ($currentTime->minute % 30))->startOfMinute();
+                if ($adjustedStart < $endTime) {
+                    $startTime = $adjustedStart;
+                    Log::info('Adjusted Start Time: ' . $startTime);
+                } else {
+                    // Si el ajuste excede el rango, no se crean slots hoy
+                    Log::info('No slots available today; adjusted time exceeds end time.');
+                    return;
+                }
+            } elseif ($currentTime->gt($endTime)) {
+                // Si la hora actual es posterior al rango, pasa al próximo día correspondiente
+                $nextScheduleDay = now()->next(DaysOfTheWeek::from($schedule->day_of_week)->name);
+                $startTime = Carbon::parse($schedule->start_time);
+                Log::info('Next Schedule Day: ' . $nextScheduleDay);
+            }
+        } else {
+            // Si no coincide el día, pasa al próximo día correspondiente
+            $nextScheduleDay = now()->next(DaysOfTheWeek::from($schedule->day_of_week)->name);
+            $startTime = Carbon::parse($schedule->start_time);
+        }
+    
+        // Crea los slots en el día correcto
+        $date = isset($nextScheduleDay) ? $nextScheduleDay->toDateString() : now()->toDateString();
+        while ($startTime < $endTime) {
+            Slot::create([
+                'vet_id' => $schedule->vet_id,
+                'date' => $date,
+                'start_time' => $startTime->toTimeString(),
+                'end_time' => $startTime->copy()->addMinutes(30)->toTimeString(),
+                'status' => 'available',
+                'schedule_id' => $schedule->id,
+            ]);
+    
+            // Avanzar al siguiente slot
+            $startTime->addMinutes(30);
+        }
+    }
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
+}

@@ -32,7 +32,38 @@ class SlotResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('date')
+                    ->label('Fecha')
+      /*               ->formatStateUsing(function ($state) {
+                        return \Carbon\Carbon::parse($state)->format('d/m/Y');
+                    }) */
+                    ->dateTime()
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('start_time')
+                    ->label('Hora de inicio')
+/*                     ->formatStateUsing(function ($state) {
+                        return \Carbon\Carbon::parse($state)->format('H:i');
+                    }) */
+                    ->dateTime()
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('end_time')
+                    ->label('Hora de fin')
+        /*             ->formatStateUsing(function ($state) {
+                        return \Carbon\Carbon::parse($state)->format('H:i');
+                    }) */
+                    ->dateTime()
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('status')
+                    ->badge()
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('vet.name')
+                    ->label('Veterinario')
+                    ->searchable()
+                    ->sortable(),
             ])
             ->filters([
                 //
