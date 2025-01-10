@@ -18,7 +18,7 @@ return new class extends Migration
             $table->time('start_time');
             $table->time('end_time');
             $table->string('status')->default('available');
-            $table->foreignId('schedule_id')->constrained('schedules'); // creo que aqui no va onDelete('cascade')
+            $table->foreignId('schedule_id')->constrained('schedules')->onDelete('cascade');
             $table->timestamps();
         });
     }
