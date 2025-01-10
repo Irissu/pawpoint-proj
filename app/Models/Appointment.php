@@ -42,13 +42,14 @@ class Appointment extends Model
 
     protected $casts = [
         'status' => AppointmentStatus::class,
-    ];
+    ]; 
 
     protected $fillable = [
         'vet_id',
         'owner_id',
-        'pet_id',
-        'slot_id',
+        'date',
+        'start_time',
+        'end_time',
         'status',
         'description',
     ];
@@ -65,7 +66,7 @@ class Appointment extends Model
         return $this->belongsTo(User::class, 'vet_id');
     }
 
-    public function slot()
+    /* public function slot()
     {
         return $this->belongsTo(Slot::class);
         
@@ -74,8 +75,8 @@ class Appointment extends Model
     public function pet()
     {
         return $this->belongsTo(Pet::class);
-    }
-
+    } */
+/* 
     protected static function booted()
 {
     static::saving(function ($appointment) {
@@ -83,6 +84,6 @@ class Appointment extends Model
             throw new \InvalidArgumentException('Slot is already booked.');
         }
     });
-}
+} */
 
 }

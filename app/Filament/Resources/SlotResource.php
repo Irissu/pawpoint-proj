@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\RoleUsers;
 use App\Filament\Resources\SlotResource\Pages;
 use App\Filament\Resources\SlotResource\RelationManagers;
 use App\Models\Slot;
@@ -12,6 +13,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Models\User;
 
 class SlotResource extends Resource
 {
@@ -66,7 +68,9 @@ class SlotResource extends Resource
                     ->sortable(),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('vet_id')
+                    ->label('Veterinario')
+                    ->options(fn () => User::where('role', RoleUsers::Vet)->pluck('name', 'id')->toArray()),    
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

@@ -85,7 +85,13 @@ class ScheduleResource extends Resource
                 Tables\Columns\TextColumn::make('day_of_week')
                 ->label('Día de la semana')
                 ->formatStateUsing(function ($state) {
-                    return $state == 0 ? 'Lunes' : ($state == 1 ? 'Martes' : ($state == 2 ? 'Miércoles' : ($state == 3 ? 'Jueves' : 'Viernes')));
+                    return match ($state) {
+                        1 => 'Lunes',
+                        2 => 'Martes',
+                        3 => 'Miércoles',
+                        4 => 'Jueves',
+                        5 => 'Viernes',
+                    };
                 })
                 ->searchable()
                 ->sortable(),

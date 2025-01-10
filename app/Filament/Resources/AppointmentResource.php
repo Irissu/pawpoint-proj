@@ -6,6 +6,7 @@ use App\Filament\Resources\AppointmentResource\Pages;
 use App\Filament\Resources\AppointmentResource\RelationManagers;
 use App\Models\Appointment;
 use Filament\Forms;
+use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -38,7 +39,41 @@ class AppointmentResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('vet.name')
+                ->label('Veterinario')
+                ->searchable()
+                ->sortable(),
+                Tables\Columns\TextColumn::make('owner.name')
+                ->label('Paciente')
+                ->searchable()
+                ->sortable(),
+                Tables\Columns\TextColumn::make('date')
+                ->label('Fecha')
+                ->formatStateUsing(function ($state) {
+                    return \Carbon\Carbon::parse($state)->format('d/m/Y');
+                })
+                ->searchable()
+                ->sortable(),
+                Tables\Columns\TextColumn::make('start_time')
+                    ->label('Hora de inicio')
+                    ->formatStateUsing(function ($state) {
+                        return \Carbon\Carbon::parse($state)->format('H:i');
+                    })
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('end_time')
+                    ->label('Hora de fin')
+                    ->formatStateUsing(function ($state) {
+                        return \Carbon\Carbon::parse($state)->format('H:i');
+                    })
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('status')
+                    ->badge()
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('description')
+                    ->label('Descripción'),
             ])
             ->filters([
                 //

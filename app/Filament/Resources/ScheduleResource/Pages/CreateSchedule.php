@@ -56,7 +56,7 @@ class CreateSchedule extends CreateRecord
         Log::info('Current Time: ' . $currentTime);
         Log::info('Start Time: ' . $startTime);
         Log::info('End Time: ' . $endTime);
-        Log::info('Schedule Day of Week: ' . $schedule->day_of_week); // me devuelve 3
+        Log::info('Schedule Day of Week: ' . $schedule->day_of_week); 
     
         // Si el día actual coincide con el día del horario
         if ($currentDay == $schedule->day_of_week) {
@@ -80,7 +80,7 @@ class CreateSchedule extends CreateRecord
                 Log::info('Next Schedule Day: ' . $nextScheduleDay);
             }
         } else {
-            // Si no coincide el día, pasa al próximo día correspondiente
+            // Si no coincide el día, pasa al próximo día correspondiente 
             $nextScheduleDay = now()->next(DaysOfTheWeek::from($schedule->day_of_week)->name);
             $startTime = Carbon::parse($schedule->start_time);
         }
