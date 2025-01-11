@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('vet_id')->constrained('users');
             $table->foreignId('owner_id')->constrained('users');
+            $table->string('pet_name')->nullable();
+            $table->string('pet_type')->nullable();
             $table->date('date');
             $table->time('start_time');
             $table->time('end_time');

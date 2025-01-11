@@ -41,13 +41,11 @@ class CreateSchedule extends CreateRecord
     {
 
         Carbon::setLocale('es');
-        // Configurar el primer día de la semana como lunes
+       
         $schedule = $this->record; 
         // Día y hora actuales
-        $currentDay = now()->dayOfWeek; // 4
+        $currentDay = now()->dayOfWeek; 
         $currentTime = now();
-
-    
         // Rango de tiempo del horario
         $startTime = Carbon::parse($schedule->start_time); // recoge correctamente la hora que le paso
         $endTime = Carbon::parse($schedule->end_time); // recoge correctamente la hora que le paso

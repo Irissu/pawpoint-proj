@@ -56,12 +56,12 @@ class Appointment extends Model
 
     // relaciones
 
-    public function ownerUser()
+    public function owner()
     {
         return $this->belongsTo(User::class, 'owner_id');
     }
 
-    public function vetUser()
+    public function vet()
     {
         return $this->belongsTo(User::class, 'vet_id');
     }
