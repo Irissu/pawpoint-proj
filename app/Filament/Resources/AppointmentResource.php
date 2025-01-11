@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
+use Carbon\Carbon;
 use Symfony\Component\Yaml\Inline;
 
 class AppointmentResource extends Resource
@@ -39,22 +40,21 @@ class AppointmentResource extends Resource
                     ->hidden(!Auth::user()->isAdmin() && !Auth::user()->isVet())
                     ->label('Dueño')
                     ->native(false)
-                    ->afterStateUpdated(fn (Set $set) => $set('pet_id', null))
+                    ->afterStateUpdated(fn(Set $set) => $set('pet_id', null))
                     ->relationship('owner', 'name', function (Builder $query) { // solo muestra los dueños, unicos que pueden tener mascotas
                         return $query->where('role', RoleUsers::User);
                     })
                     ->live()
                     ->required(),
-                    Forms\Components\Select::make('pet_name')
+                Forms\Components\Select::make('pet_name')
                     ->label('Mascota')
                     ->native(false)
                     ->options(function (callable $get) {
                         $ownerId = $get('owner_id');
-                        if(Auth::user()->isAdmin() || Auth::user()->isVet()){
+                        if (Auth::user()->isAdmin() || Auth::user()->isVet()) {
                             if ($ownerId) {
                                 return \App\Models\Pet::where('owner_id', $ownerId)->pluck('name', 'id')->toArray();
                             }
-                           
                         } else {
                             $user = Auth::user();
                             return $user->pets()->pluck('name', 'id')->toArray();
@@ -96,20 +96,30 @@ class AppointmentResource extends Resource
                     ->label('Hora de la cita')
                     ->live()
                     ->required()
-                    ->options(function (Get $get){
+                    ->options(function (Get $get) {
                         $selectedDate = $get('date');
                         $selectedVetId = $get('vet_id');
-                        if ($selectedDate && $selectedVetId) { 
-                        // Consultar los slots disponibles
+                        $now = now(); // Fecha y hora actual
+                        if ($selectedDate && $selectedVetId) {
+                            // Consultar los slots disponibles
                             $slots = \App\Models\Slot::where('date', $selectedDate)
-                            ->where('vet_id', $selectedVetId)
-                            ->where('status', 'available')
-                            ->get();
-                            // Generar las opciones para los botones de radio
+                                ->where('vet_id', $selectedVetId)
+                                ->where('status', 'available')
+                                ->get();
                             $options = [];
                             foreach ($slots as $slot) {
-                            $options[$slot->id] = $slot->start_time->format('H:i');
+                                // Verificar si el día seleccionado es hoy
+                                if (Carbon::parse($selectedDate)->toDateString() === $now->toDateString()) {
+                                    // Se incluyen solo los horarios posteriores a la hora actual
+                                    if ($slot->start_time->gt($now)) { // si la hora de inicio del slot es mayor que la hora actual
+                                        $options[$slot->id] = $slot->start_time->format('H:i');
+                                    }
+                                } else {
+                                    // Si no es el día actual, incluir todos los horarios
+                                    $options[$slot->id] = $slot->start_time->format('H:i');
+                                }
                             }
+
                             return $options;
                         }
                         return [];
@@ -141,7 +151,7 @@ class AppointmentResource extends Resource
                     ->label('Tipo')
                     ->sortable()
                     ->badge()
-                    ->color(fn (string $state): string => match ($state) {
+                    ->color(fn(string $state): string => match ($state) {
                         'dog' => 'danger',
                         'cat' => 'info',
                     })
@@ -181,9 +191,9 @@ class AppointmentResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
-                ->iconButton(),
+                    ->iconButton(),
                 Tables\Actions\DeleteAction::make()
-                ->iconButton(),
+                    ->iconButton(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

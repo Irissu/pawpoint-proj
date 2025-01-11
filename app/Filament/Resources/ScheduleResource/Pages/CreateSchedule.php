@@ -80,7 +80,7 @@ class CreateSchedule extends CreateRecord
         } else {
             // Si no coincide el día, pasa al próximo día correspondiente 
             $nextScheduleDay = now()->next(DaysOfTheWeek::from($schedule->day_of_week)->name);
-            $startTime = Carbon::parse($schedule->start_time);
+            $startTime = Carbon::parse($schedule->start_time); 
         }
     
         // Crea los slots en el día correcto
