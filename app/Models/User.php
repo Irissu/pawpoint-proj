@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Filament\Models\Contracts\HasAvatar;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -62,9 +63,11 @@ use App\Enums\RoleUsers as Role;
  * @mixin \Eloquent
  */
 
-class User extends Authenticatable
+class User extends Authenticatable implements HasAvatar
 {
     use HasApiTokens, HasFactory, Notifiable;
+
+    use Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -154,6 +157,11 @@ class User extends Authenticatable
     {
         return $this->role->value === Role::User->value;
     }  
+
+    public function getFilamentAvatarUrl(): ?string
+    {
+        return $this->avatar_url;
+    }
 
 /*     protected static function booted()
     {

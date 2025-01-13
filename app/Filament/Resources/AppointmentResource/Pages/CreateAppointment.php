@@ -17,7 +17,7 @@ class CreateAppointment extends CreateRecord
         if (Auth::user()->role === RoleUsers::User) {
             $data['owner_id'] = Auth::id();
         }
-
+        // Buscar y asignar el nombre y tipo de la mascota correspondiente al ID seleccionado
         if(isset($data['pet_name'])){
             $pet = \App\Models\Pet::find($data['pet_name']);
             if($pet){
@@ -32,9 +32,13 @@ class CreateAppointment extends CreateRecord
             if ($slot) {
                 $data['start_time'] = $slot->start_time;
                 $data['end_time'] = $slot->end_time;
+
+                 // Asignar el estado del slot a 'booked'. Debemos hacerlo en su tabla de la BBDD
+                 $slot->update(['status' => 'booked']);
             }
         }
-    
+        
+
         return $data;
     }
 

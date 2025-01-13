@@ -2,10 +2,14 @@
 
 namespace App\Filament\Resources;
 
+use App;
+use App\Enums\AppointmentStatus;
 use App\Filament\Resources\AppointmentResource\Pages;
 use App\Filament\Resources\AppointmentResource\RelationManagers;
 use App\Models\Appointment;
 use Filament\Forms;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use App\Enums\RoleUsers;
 use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Form;
@@ -18,6 +22,7 @@ use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Carbon\Carbon;
+use Dom\Text;
 use Symfony\Component\Yaml\Inline;
 
 class AppointmentResource extends Resource
@@ -166,34 +171,116 @@ class AppointmentResource extends Resource
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('start_time')
-                    ->label('Hora de inicio')
+                    ->label('Hora de cita')
                     ->formatStateUsing(function ($state) {
                         return \Carbon\Carbon::parse($state)->format('H:i');
                     })
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('end_time')
+               /*  Tables\Columns\TextColumn::make('end_time')
                     ->label('Hora de fin')
                     ->formatStateUsing(function ($state) {
                         return \Carbon\Carbon::parse($state)->format('H:i');
                     })
                     ->searchable()
-                    ->sortable(),
+                    ->sortable(), */
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('description')
-                    ->label('Descripción'),
+               /*  Tables\Columns\TextColumn::make('description')
+                    ->label('Descripción'), */
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make()
+ /*                Tables\Actions\EditAction::make()
                     ->iconButton(),
-                Tables\Actions\DeleteAction::make()
-                    ->iconButton(),
+                    ->view() solo si es vet o admin */
+              /*   Tables\Actions\DeleteAction::make()
+                    ->iconButton(), */
+                Tables\Actions\Action::make('Cancelar')
+                ->modalHeading('Cancelar cita')
+                ->requiresConfirmation()
+                    ->modalDescription('¿Seguro que quieres cancelar la cita? Se enviará un email con los detalles de la cancelación.')
+                    ->modalSubmitActionLabel('Si, cancelar')
+                    ->modalCancelActionLabel('No, mantener')
+                    ->icon('heroicon-o-x-mark')
+                    ->color('danger')
+                    ->modalIcon('heroicon-o-x-mark')
+                    ->modalIconColor('warning')
+                    ->form([
+                        TextInput::make('reason')
+                            ->label('Motivo de la cancelación')
+                            ->placeholder('Escribe aquí el motivo de la cancelación')
+                            ->required(),
+                    ])
+                    ->action(function (Appointment $record, array $data) {
+                        $record->update(['status' => 'cancelled']);
+
+                        // Enviar notificación de cancelación
+                        $record->owner->notify(new \App\Notifications\AppointmentCancelled($data['reason'], $record));
+                    })
+                    ->visible(fn(Appointment $record) => $record->status != AppointmentStatus::Cancelled),
+                Tables\Actions\Action::make('Confirmar')
+                    ->action(function (Appointment $record) {
+                        $record->update(['status' => 'confirmed']);
+
+                                // Cambiar el estado del slot asociado a 'available'
+                        if ($record->start_time) {
+                            $slot = \App\Models\Slot::where('start_time', $record->start_time)
+                                ->where('date', $record->date)
+                                ->where('vet_id', $record->vet_id)
+                                ->first();
+
+                            if ($slot) {
+                                $slot->update(['status' => 'available']);
+                            }
+                        }
+                    })
+                    ->visible(fn(Appointment $record) => $record->status != AppointmentStatus::Confirmed)
+                    ->color('success')
+                    ->icon('heroicon-o-check-circle'),
+                    Tables\Actions\Action::make('Detalles')
+                    ->icon('heroicon-o-eye')
+                    ->color('info')
+                    ->modalHeading('Detalles de la cita')
+                    ->form([
+                        Forms\Components\Grid::make(2) // Define el número de columnas
+                            ->schema([
+                                TextInput::make('vet_name')
+                                    ->label('Veterinario'),
+                                TextInput::make('owner_name')
+                                    ->label('Dueño'),
+                                TextInput::make('pet_name')
+                                    ->label('Mascota'),
+                                TextInput::make('pet_type')
+                                    ->label('Tipo de Mascota'),
+                                TextInput::make('date')
+                                    ->label('Fecha'),
+                                TextInput::make('start_time')
+                                    ->label('Hora de inicio'),
+                                TextInput::make('end_time')
+                                    ->label('Hora de fin'),
+                            ]),
+                        Textarea::make('description')
+                            ->label('Descripción')
+                            ->rows(3),
+                    ])
+                    ->fillForm(fn (Appointment $record): array => [
+                        'vet_name' => $record->vet?->name ?? 'N/A',
+                        'owner_name' => $record->owner?->name ?? 'N/A',
+                        'pet_name' => $record->pet_name,
+                        'pet_type' => $record->pet_type === 'dog' ? 'Perro' : 'Gato',
+                        'date' =>  \Carbon\Carbon::parse($record->date)->format('d/m/Y'),
+                        'start_time' =>  \Carbon\Carbon::parse($record->start_time)->format('H:i'),
+                        'end_time' => \Carbon\Carbon::parse($record->end_time)->format('H:i'),
+                        'description' => $record->description,
+                    ])
+                    ->disabledForm()
+                    ->modalSubmitAction(false)
+                    ->modalCancelAction(false),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

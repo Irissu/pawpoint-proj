@@ -5,22 +5,21 @@ use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasLabel;
 
 enum AppointmentStatus: string implements HasLabel, HasColor {
-    case Pending = 'pending';
-    case Accepted = 'accepted';
-    case Completed = 'completed';
+    case Confirmed = 'confirmed';
     case Cancelled = 'cancelled';
 
     public function getLabel(): ?string
     {
-        return $this->name;
+        return match ($this) {
+            self::Confirmed => 'Confirmada',
+            self::Cancelled => 'Cancelada',
+        };
     }
 
     public function getColor(): string | array | null
     {
         return match ($this) {
-            self::Pending => 'gray', // grey
-            self::Accepted => 'success', // green
-            self::Completed => 'info', // blue
+            self::Confirmed => 'success', // green
             self::Cancelled => 'danger', // red
         };
     }
