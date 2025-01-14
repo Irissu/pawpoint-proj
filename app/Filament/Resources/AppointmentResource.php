@@ -180,7 +180,7 @@ class AppointmentResource extends Resource
                /*  Tables\Columns\TextColumn::make('end_time')
                     ->label('Hora de fin')
                     ->formatStateUsing(function ($state) {
-                        return \Carbon\Carbon::parse($state)->format('H:i');
+                        return \Carbon\Carbon::parse($state)->format('H:i'); 
                     })
                     ->searchable()
                     ->sortable(), */

@@ -39,6 +39,9 @@ class CreateSchedule extends CreateRecord
 
     protected function afterCreate(): void
     {
+        if(!$this->record->is_active) {
+            return;
+        }
 
         Carbon::setLocale('es');
        

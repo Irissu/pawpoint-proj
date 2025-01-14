@@ -98,7 +98,7 @@ class ScheduleResource extends Resource
                 Tables\Columns\TextColumn::make('start_time')
                 ->label('Hora de inicio')
        /*          ->formatStateUsing(function ($state) {
-                    return \Carbon\Carbon::parse($state)->format('H:i');
+                    return \Carbon\Carbon::parse($state)->format('H:i'); 
                 }) */
                 ->dateTime()
                 ->searchable()
@@ -123,6 +123,7 @@ class ScheduleResource extends Resource
                 Tables\Actions\EditAction::make()
                 ->iconButton(),
                 Tables\Actions\DeleteAction::make()
+                ->modalDescription('¿Estás seguro? recuerda: las citas reservadas no serán canceladas. Debes hacerlo manualmente')
                 ->iconButton(),
             ])
             ->bulkActions([

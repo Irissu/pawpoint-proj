@@ -26,7 +26,14 @@ class SlotResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\Select::make('status')
+                    ->options([
+                        'available' => 'Disponible',
+                        'booked' => 'Reservado',
+                    ])
+                    ->label('Estado')
+                    ->hiddenOn('create')
+                    ->required(),
             ]);
     }
 
@@ -53,7 +60,7 @@ class SlotResource extends Resource
                 Tables\Columns\TextColumn::make('end_time')
                     ->label('Hora de fin')
         /*             ->formatStateUsing(function ($state) {
-                        return \Carbon\Carbon::parse($state)->format('H:i');
+                        return \Carbon\Carbon::parse($state)->format('H:i'); 
                     }) */
                     ->dateTime()
                     ->searchable()
