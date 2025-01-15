@@ -13,6 +13,8 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
+        $schedule->command(('slots:generate'))->weeklyOn(0, '23:00'); // Todos los domingos a las 23:00
+        $schedule->command(('slots:clean'))->dailyAt('02:00'); // Todos los dias a las 00:00
     }
 
     /**
