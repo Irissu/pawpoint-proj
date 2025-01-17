@@ -148,4 +148,14 @@ class ScheduleResource extends Resource
             'edit' => Pages\EditSchedule::route('/{record}/edit'),
         ];
     }
+
+    
+    public static function shouldRegisterNavigation(): bool
+    {
+        if (Auth::user()->isAdmin() || Auth::user()->isVet()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

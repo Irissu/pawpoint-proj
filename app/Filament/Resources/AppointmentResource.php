@@ -222,7 +222,8 @@ class AppointmentResource extends Resource
                         // Enviar notificación de cancelación
                         $record->owner->notify(new \App\Notifications\AppointmentCancelled($data['reason'], $record));
                     })
-                    ->visible(fn(Appointment $record) => $record->status != AppointmentStatus::Cancelled),
+                    ->visible(fn(Appointment $record) => $record->status != AppointmentStatus::Cancelled)
+                    ->hidden(!Auth::user()->isAdmin() && !Auth::user()->isVet()),
                 Tables\Actions\Action::make('Confirmar')
                     ->action(function (Appointment $record) {
                         $record->update(['status' => 'confirmed']);
@@ -240,6 +241,7 @@ class AppointmentResource extends Resource
                         }
                     })
                     ->visible(fn(Appointment $record) => $record->status != AppointmentStatus::Confirmed)
+                    ->hidden(!Auth::user()->isAdmin() && !Auth::user()->isVet()) 
                     ->color('success')
                     ->icon('heroicon-o-check-circle'),
                     Tables\Actions\Action::make('Detalles')

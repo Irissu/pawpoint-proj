@@ -14,6 +14,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class SlotResource extends Resource
 {
@@ -103,5 +104,14 @@ class SlotResource extends Resource
             'create' => Pages\CreateSlot::route('/create'),
             'edit' => Pages\EditSlot::route('/{record}/edit'),
         ];
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        if (Auth::user()->isAdmin() || Auth::user()->isVet()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

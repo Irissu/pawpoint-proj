@@ -50,7 +50,7 @@ class AppointmentPolicy
      */
     public function delete(User $user, Appointment $appointment): bool
     {
-        if(Auth::user()->isAdmin() || Auth::user()->isVet()){
+        if(Auth::user()->isAdmin()) {
             return true;
         } else {
             return false;
