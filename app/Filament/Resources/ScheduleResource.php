@@ -6,6 +6,7 @@ use App\Enums\RoleUsers;
 use App\Filament\Resources\ScheduleResource\Pages;
 use App\Filament\Resources\ScheduleResource\RelationManagers;
 use App\Models\Schedule;
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -100,7 +101,9 @@ class ScheduleResource extends Resource
        /*          ->formatStateUsing(function ($state) {
                     return \Carbon\Carbon::parse($state)->format('H:i'); 
                 }) */
-                ->dateTime()
+                 ->formatStateUsing(function ($state) {
+                    return Carbon::parse($state)->format('H:i');
+                 })
                 ->searchable()
                 ->sortable(),
                 Tables\Columns\TextColumn::make('end_time')
@@ -108,7 +111,10 @@ class ScheduleResource extends Resource
      /*            ->formatStateUsing(function ($state) {
                     return \Carbon\Carbon::parse($state)->format('H:i');
                 }) */
-                ->dateTime()
+               ->formatStateUsing(function ($state) {
+                 return Carbon::parse($state)->format('H:i');
+               })
+                /* ->dateTime() */
                 ->searchable()
                 ->sortable(),
                 Tables\Columns\IconColumn::make('is_active')
@@ -148,7 +154,14 @@ class ScheduleResource extends Resource
             'edit' => Pages\EditSchedule::route('/{record}/edit'),
         ];
     }
-
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+        if (Auth::user()->isVet()) {
+            $query->where('vet_id', Auth::id());
+        }
+        return $query;
+    }
     
     public static function shouldRegisterNavigation(): bool
     {

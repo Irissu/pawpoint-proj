@@ -298,6 +298,19 @@ class AppointmentResource extends Resource
         ];
     }
 
+    public static function getEloquentQuery(): Builder
+{
+    $query = parent::getEloquentQuery();
+
+    if (Auth::user()->isOwner()) {
+        $query->where('owner_id', Auth::id());
+    } else if (Auth::user()->isVet()) {
+        $query->where('vet_id', Auth::id());
+    }
+
+    return $query;
+}
+
     public static function getPages(): array
     {
         return [

@@ -106,6 +106,15 @@ class SlotResource extends Resource
         ];
     }
 
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+        if (Auth::user()->isVet()) {
+            $query->where('vet_id', Auth::id());
+        }
+        return $query;
+    }
+
     public static function shouldRegisterNavigation(): bool
     {
         if (Auth::user()->isAdmin() || Auth::user()->isVet()) {

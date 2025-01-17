@@ -109,6 +109,7 @@ class PetResource extends Resource
                 Tables\Columns\TextColumn::make('breed')
                 ->label('Raza'),
                 Tables\Columns\TextColumn::make('owner.name') // solo debería ser visible para admin y vet
+                ->hidden(!Auth::user()->isAdmin() && !Auth::user()->isVet())
                 ->label('Dueño')
                 ->searchable(),
             ])
@@ -137,6 +138,15 @@ class PetResource extends Resource
         return [
             //
         ];
+    }
+
+        public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+        if (Auth::user()->isOwner()) {
+            $query->where('owner_id', Auth::id());
+        }
+        return $query;
     }
 
     public static function getPages(): array
