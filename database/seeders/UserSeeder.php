@@ -26,7 +26,6 @@ class UserSeeder extends Seeder
             'img_path' => null,
         ]);
 
-        // create 3 vets
         $veterinarians = [
             [
                 'name' => 'Kenzo',
@@ -63,7 +62,6 @@ class UserSeeder extends Seeder
         }
 
 
-        // Create 5 owners and their pets
         $owners = [
             [
                 'name' => 'Philip',
@@ -140,6 +138,7 @@ class UserSeeder extends Seeder
                 'name' => $owner['name'],
                 'surname' => $owner['surname'],
                 'email' => $owner['email'],
+                'email_verified_at' => now(),
                 'password' => Hash::make('password'),
                 'phone' => $owner['phone'],
                 'address' => isset($owner['address']) ? $owner['address'] : 'Calle Falsa 123',

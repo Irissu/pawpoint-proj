@@ -43,6 +43,7 @@ class AppointmentResource extends Resource
             ->schema([
                 Forms\Components\Select::make('owner_id')
                     ->hidden(!Auth::user()->isAdmin() && !Auth::user()->isVet())
+                    ->disabledOn('edit')
                     ->label('Dueño')
                     ->native(false)
                     ->afterStateUpdated(fn(Set $set) => $set('pet_id', null))
@@ -54,6 +55,7 @@ class AppointmentResource extends Resource
                 Forms\Components\Select::make('pet_name')
                     ->label('Mascota')
                     ->native(false)
+                    ->disabledOn('edit')
                     ->options(function (callable $get) {
                         $ownerId = $get('owner_id');
                         if (Auth::user()->isAdmin() || Auth::user()->isVet()) {
@@ -71,16 +73,17 @@ class AppointmentResource extends Resource
                     ->label('Fecha')
                     ->native(false)
                     ->live()
+                    ->disabledOn('edit')
                     ->displayFormat('d/m/Y')
                     ->closeOnDateSelection()
                     ->required()
                     ->minDate(now())
                     ->maxDate(now()->addDays(7)),
-                /** consulta a la tabla slots donde: dado un dia (el dia seleccionado en el 'date' del DatePicker) devuelva si hay algun registro con 'status' = 'available' y devuelve el veterinario asociado a ese/esos registros */
                 Forms\Components\Select::make('vet_id')
                     ->label('Veterinarios disponibles')
                     ->native(false)
                     ->live()
+                    ->hiddenOn('edit')
                     ->options(function (Get $get) {
                         $selectedDate = $get('date');
                         if ($selectedDate) {
@@ -97,23 +100,22 @@ class AppointmentResource extends Resource
                         return [];
                     })
                     ->required(),
-                Forms\Components\Radio::make('start_time')->inline(false) /* consulta a la tabla slots donde: se buscan los slots con 'status' = 'available' dado el veterinario seleccionado en el select anterior. devuelve las horas de inicio de cada registro */
+                Forms\Components\Radio::make('start_time')->inline(false) 
                     ->label('Hora de la cita')
                     ->live()
+                    ->hiddenOn('edit')
                     ->required()
                     ->options(function (Get $get) {
                         $selectedDate = $get('date');
                         $selectedVetId = $get('vet_id');
-                        $now = now(); // Fecha y hora actual
+                        $now = now(); 
                         if ($selectedDate && $selectedVetId) {
-                            // Consultar los slots disponibles
                             $slots = \App\Models\Slot::where('date', $selectedDate)
                                 ->where('vet_id', $selectedVetId)
                                 ->where('status', 'available')
                                 ->get();
                             $options = [];
                             foreach ($slots as $slot) {
-                                // Verificar si el día seleccionado es hoy
                                 if (Carbon::parse($selectedDate)->toDateString() === $now->toDateString()) {
                                     // Se incluyen solo los horarios posteriores a la hora actual
                                     if ($slot->start_time->gt($now)) { // si la hora de inicio del slot es mayor que la hora actual
@@ -133,6 +135,7 @@ class AppointmentResource extends Resource
                     ->inlineLabel(false),
                 Forms\Components\Textarea::make('description')
                     ->rows(3)
+                    ->disabledOn('edit')
                     ->placeholder(`Aquí puede explicar el motivo de su cita`)
                     ->label('Descripción'),
             ]);

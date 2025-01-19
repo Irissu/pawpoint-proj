@@ -7,6 +7,7 @@ use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Facades\Auth;
 use App\Enums\RoleUsers;
+use Filament\Notifications\Notification;
 
 class CreateAppointment extends CreateRecord
 {
@@ -40,6 +41,19 @@ class CreateAppointment extends CreateRecord
         
 
         return $data;
+    }
+
+    public function afterCreate() {
+        // Enviar notificación al dueño de la mascota
+        $appointment = $this->record;
+        $appointment->owner->notify(new \App\Notifications\AppointmentBooked($appointment));
+       Notification::make()
+            ->title('Cita creada')
+            ->icon('heroicon-o-document-text')
+            ->success()
+            ->body('La cita ha sido creada correctamente. Recibirá un correo con los detalles.')
+            ->seconds(5)
+            ->send();
     }
 
     protected function getRedirectUrl(): string // This method is used to redirect the user to the index page after editing a record

@@ -2,7 +2,9 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\Auth\EditProfile;
 use App\Filament\Pages\Auth\Register;
+use App\Notifications\UserVerification;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -29,8 +31,9 @@ class DashboardPanelProvider extends PanelProvider
             ->path('dashboard')
             ->login()
             ->passwordReset()
+            ->emailVerification()
             ->registration(Register::class)
-            ->profile()
+            ->profile(EditProfile::class)
             ->brandName('Pawpoint')
             ->colors([
                 'primary' => Color::Teal,

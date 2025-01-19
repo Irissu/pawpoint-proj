@@ -2,13 +2,15 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Filament\Models\Contracts\HasAvatar;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Enums\RoleUsers as Role;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 
 /**
  * 
@@ -62,8 +64,8 @@ use App\Enums\RoleUsers as Role;
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-
-class User extends Authenticatable implements HasAvatar
+// FilamentUser - implementar en produccion
+class User extends Authenticatable implements HasAvatar, MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -87,7 +89,7 @@ class User extends Authenticatable implements HasAvatar
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
+     * The attributes that should be hidden for serialization. 
      *
      * @var array<int, string>
      */
@@ -160,8 +162,14 @@ class User extends Authenticatable implements HasAvatar
 
     public function getFilamentAvatarUrl(): ?string
     {
-        return $this->avatar_url;
+        return "/storage/$this->img_path";
     }
+
+/* HABILITAR EN PRODUCCIÓN:
+     public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->hasVerifiedEmail();
+    } */
 
 /*     protected static function booted()
     {
