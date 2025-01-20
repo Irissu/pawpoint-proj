@@ -103,8 +103,10 @@ class UserResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
+                ->size('xl')
                 ->iconButton(),
                 Tables\Actions\DeleteAction::make()
+                ->size('xl')
                 ->iconButton(),
             ])
             ->bulkActions([

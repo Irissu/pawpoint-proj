@@ -211,6 +211,7 @@ class AppointmentResource extends Resource
                     ->modalCancelActionLabel('No, mantener')
                     ->icon('heroicon-o-x-mark')
                     ->color('danger')
+                    ->size('xl')
                     ->modalIcon('heroicon-o-x-mark')
                     ->modalIconColor('warning')
                     ->form([
@@ -246,10 +247,12 @@ class AppointmentResource extends Resource
                     ->visible(fn(Appointment $record) => $record->status != AppointmentStatus::Confirmed)
                     ->hidden(!Auth::user()->isAdmin() && !Auth::user()->isVet()) 
                     ->color('success')
+                    ->size('xl')
                     ->icon('heroicon-o-check-circle'),
                     Tables\Actions\Action::make('Detalles')
                     ->icon('heroicon-o-eye')
                     ->color('info')
+                    ->size('xl')
                     ->modalHeading('Detalles de la cita')
                     ->form([
                         Forms\Components\Grid::make(2) // Define el número de columnas

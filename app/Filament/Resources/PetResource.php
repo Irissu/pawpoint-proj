@@ -70,15 +70,24 @@ class PetResource extends Resource
                     ->required(),
                     Forms\Components\TextInput::make('email')
                     ->required(),
-                    Forms\Components\TextInput::make('password')
+/*                  Forms\Components\TextInput::make('password')
                     ->password()
                     ->revealable()
-                    ->required(),
+                    ->required(), */
                     Forms\Components\TextInput::make('phone')
                     ->label('Teléfono')
                     ->numeric()
                     ->length(9)
                     ->required(),
+                    Forms\Components\Hidden::make('password')
+                    ->default('') // Valor inicial vacío
+                    ->afterStateUpdated(function ($state, callable $set, $get) {
+                    // Generar la contraseña usando el nombre y el teléfono
+                    $name = $get('name') ?? '';
+                    $phone = $get('phone') ?? '';
+                    $password = strtolower(substr($name, 0, 3)) . substr($phone, -3);
+                    $set('password', bcrypt($password)); // Encriptar la contraseña
+                    }),
                     Forms\Components\TextInput::make('address')
                     ->label('Dirección'),
                     // rol automaticamente owner

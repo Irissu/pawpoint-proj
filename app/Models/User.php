@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Enums\RoleUsers as Role;
+use App\Notifications\UserVerification;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 
@@ -162,7 +163,15 @@ class User extends Authenticatable implements HasAvatar, MustVerifyEmail
 
     public function getFilamentAvatarUrl(): ?string
     {
+        if ($this->img_path === null) {
+            return $this->img_path;
+        }
         return "/storage/$this->img_path";
+    }
+
+    public function sendEmailVerificationNotification()
+    {
+        $this->notify(new UserVerification);
     }
 
 /* HABILITAR EN PRODUCCIÓN:
@@ -171,14 +180,5 @@ class User extends Authenticatable implements HasAvatar, MustVerifyEmail
         return $this->hasVerifiedEmail();
     } */
 
-/*     protected static function booted()
-    {
-        static::saving(function ($user) {
-            $allowedRoles = ['Admin', 'Vet', 'User'];
-            if (!in_array($user->role->value, $allowedRoles, true)) {
-                throw new \InvalidArgumentException('Invalid role assigned to user.');
-            }
-        });
-    } */
 
 }

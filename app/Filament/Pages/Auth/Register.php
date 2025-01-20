@@ -18,7 +18,12 @@ class Register extends BaseRegister
             ->label('Apellidos')
             ->required(),
             $this->getEmailFormComponent(),
-            $this->getPasswordFormComponent(),
+            $this->getPasswordFormComponent()
+            ->validationMessages([
+                'same' => 'Las contraseñas no coinciden',
+                'min' => 'La contraseña debe tener al menos 8 caracteres',
+                'max' => 'La contraseña no puede tener más de 255 caracteres',
+            ]),
             $this->getPasswordConfirmationFormComponent(),
             TextInput::make('phone')
             ->label('Teléfono')
