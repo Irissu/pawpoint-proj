@@ -9,6 +9,7 @@ use Filament\Forms;
 use App\Models\User;
 use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Form;
+use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -95,6 +96,8 @@ class PetResource extends Resource
                     ->default(RoleUsers::User),
                 ])
                 ->required(),
+                    
+               
             ]);
     }
     public static function table(Table $table): Table
@@ -145,7 +148,7 @@ class PetResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\MedicalRecordsRelationManager::class,
         ];
     }
 

@@ -8,11 +8,14 @@ use App\Filament\Resources\MedicalRecordResource\RelationManagers;
 use App\Models\MedicalRecord;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
+use App\Filament\Resources\PetResource\RelationManagers\MedicalRecordsRelationManager;
 
 class MedicalRecordResource extends Resource
 {
@@ -76,7 +79,7 @@ class MedicalRecordResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            MedicalRecordsRelationManager::class,
         ];
     }
 
