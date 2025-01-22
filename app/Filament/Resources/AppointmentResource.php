@@ -11,6 +11,8 @@ use Filament\Forms;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use App\Enums\RoleUsers;
+use App\Models\MedicalRecord;
+use Arr;
 use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -23,6 +25,8 @@ use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Carbon\Carbon;
 use Dom\Text;
+use Exception;
+use Filament\Notifications\Notification;
 use Symfony\Component\Yaml\Inline;
 
 class AppointmentResource extends Resource
@@ -174,7 +178,7 @@ class AppointmentResource extends Resource
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('start_time')
-                    ->label('Hora de cita')
+                    ->label('Hora')
                     ->formatStateUsing(function ($state) {
                         return \Carbon\Carbon::parse($state)->format('H:i');
                     })
@@ -289,7 +293,56 @@ class AppointmentResource extends Resource
                     ->disabledForm()
                     ->modalSubmitAction(false)
                     ->modalCancelAction(false),
+
+                    Tables\Actions\Action::make('Historial')
+                    ->icon('heroicon-o-document-text')
+                    ->size('xl')
+                    ->modalHeading('Registrar en el historial')
+                    ->action(function (Appointment $record, array $data) {
+
+                        // obtener la mascota
+                        $pet = \App\Models\Pet::where('name', $record->pet_name)
+                        ->where('owner_id', $record->owner_id)
+                        ->first();
+                        
+                        if(!$pet){
+                            throw new Exception('No se ha encontrado la mascota');
+                        }
+
+
+                        MedicalRecord::create([
+                            'appointment_id' => $record->id,
+                            'pet_id' => $pet->id,
+                            'vet_id' => $record->vet_id,
+                            'owner_id' => $record->owner_id,
+                            'date' => $record->date,
+                            'start_time' => $record->start_time,
+                            'end_time' => $record->end_time,
+                            'summary' => $data['summary'],
+                            'treatment' => $data['treatment'],
+                        ]);
+                    })
+                    ->form([
+                        Textarea::make('summary')
+                            ->label('Resumen')
+                            ->placeholder('Resumen de la cita')
+                            ->rows(3)
+                            ->required(),
+                        Textarea::make('treatment')
+                            ->label('Tratamiento')
+                            ->rows(3)
+                            ->placeholder('Tratamiento aplicado')
+                            ->required(),
+                    ])
+                    ->successNotification(
+                        Notification::make()
+                             ->success()
+                             ->title('Historial registrado')
+                             ->body('El historial ha sido actualizado con los datos de la última cita'),
+                     )
+                     ->successRedirectUrl(fn (): string => route('filament.dashboard.resources.medical-records.index'))
             ])
+
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),

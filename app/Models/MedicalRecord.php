@@ -13,6 +13,7 @@ class MedicalRecord extends Model
         'appointment_id',
         'pet_id',
         'vet_id',
+        'owner_id',
         'summary',
         'treatment',
     ];
@@ -30,5 +31,10 @@ class MedicalRecord extends Model
     public function vet()
     {
         return $this->belongsTo(User::class, 'vet_id');
+    }
+
+    public function owner()
+    {
+        return $this->belongsTo(User::class, 'owner_id');
     }
 }

@@ -131,6 +131,16 @@ class User extends Authenticatable implements HasAvatar, MustVerifyEmail
         return $this->hasMany(Slot::class);
     }
 
+    public function vetMedicalRecords()
+    {
+        return $this->hasMany(MedicalRecord::class, 'vet_id');
+    }
+
+    public function ownerMedicalRecords()
+    {
+        return $this->hasMany(MedicalRecord::class, 'owner_id');
+    }
+
     // helpers para verificar roles
         /**
      * Check if the user is an Admin.

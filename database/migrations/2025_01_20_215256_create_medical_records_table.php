@@ -17,6 +17,10 @@ return new class extends Migration
             $table->foreignId('appointment_id')->constrained()->onDelete('cascade');
             $table->foreignId('pet_id')->constrained()->onDelete('cascade');
             $table->foreignId('vet_id')->nullable()->constrained('users');
+            $table->foreignId('owner_id')->nullable()->constrained('users');
+            $table->date('date');
+            $table->time('start_time');
+            $table->time('end_time');
             $table->text('summary')->nullable();
             $table->text('treatment')->nullable();
         });

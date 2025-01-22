@@ -57,6 +57,11 @@ class Pet extends Model
         return $this->hasMany(Appointment::class);
     }
 
+    public function medicalRecords()
+    {
+        return $this->hasMany(MedicalRecord::class);
+    }
+
     protected static function booted() {
         // validate the pet type
         static::saving(function ($pet) {
