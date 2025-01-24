@@ -35,6 +35,9 @@ class DashboardPanelProvider extends PanelProvider
             ->registration(Register::class)
             ->profile(EditProfile::class)
             ->brandName('Pawpoint')
+            ->brandLogo(asset('images/pawpointblack.png'))
+            ->darkModeBrandLogo(asset('images/pawpointwhite.png'))
+            ->brandLogoHeight('2rem')
             ->colors([
                 'primary' => Color::Teal,
             ])
