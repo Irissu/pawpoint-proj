@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('medical_records', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->foreignId('appointment_id')->constrained()->onDelete('cascade');
+            $table->foreignId('appointment_id')->unique()->constrained()->onDelete('cascade');
             $table->foreignId('pet_id')->constrained()->onDelete('cascade');
             $table->foreignId('vet_id')->nullable()->constrained('users');
             $table->foreignId('owner_id')->nullable()->constrained('users');

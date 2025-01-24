@@ -79,7 +79,7 @@ class MedicalRecordResource extends Resource
     public static function getRelations(): array
     {
         return [
-            MedicalRecordsRelationManager::class,
+           //
         ];
     }
 
@@ -90,6 +90,15 @@ class MedicalRecordResource extends Resource
             /* 'create' => Pages\CreateMedicalRecord::route('/create'), */
              'edit' => Pages\EditMedicalRecord::route('/{record}/edit'), 
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+        if (Auth::user()->isOwner()) {
+            $query->where('owner_id', Auth::id());
+        }
+        return $query;
     }
 
     public static function canCreate(): bool

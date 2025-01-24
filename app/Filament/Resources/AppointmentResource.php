@@ -50,6 +50,9 @@ class AppointmentResource extends Resource
                     ->disabledOn('edit')
                     ->label('Dueño')
                     ->native(false)
+                    ->validationMessages([
+                        'required' => 'Selecciona un dueño para la cita',
+                    ])
                     ->afterStateUpdated(fn(Set $set) => $set('pet_id', null))
                     ->relationship('owner', 'name', function (Builder $query) { // solo muestra los dueños, unicos que pueden tener mascotas
                         return $query->where('role', RoleUsers::User);
@@ -60,6 +63,9 @@ class AppointmentResource extends Resource
                     ->label('Mascota')
                     ->native(false)
                     ->disabledOn('edit')
+                    ->validationMessages([
+                        'required' => 'Selecciona una mascota para la cita',
+                    ])
                     ->options(function (callable $get) {
                         $ownerId = $get('owner_id');
                         if (Auth::user()->isAdmin() || Auth::user()->isVet()) {
@@ -81,12 +87,18 @@ class AppointmentResource extends Resource
                     ->displayFormat('d/m/Y')
                     ->closeOnDateSelection()
                     ->required()
-                    ->minDate(now())
+                    ->validationMessages([
+                        'required' => 'Selecciona una fecha para la cita',
+                    ])
+                    ->minDate(now()->startOfDay())
                     ->maxDate(now()->addDays(7)),
                 Forms\Components\Select::make('vet_id')
                     ->label('Veterinarios disponibles')
                     ->native(false)
                     ->live()
+                    ->validationMessages([
+                        'required' => 'Selecciona un veterinario disponible para la fecha seleccionada',
+                    ])
                     ->hiddenOn('edit')
                     ->options(function (Get $get) {
                         $selectedDate = $get('date');
@@ -107,6 +119,9 @@ class AppointmentResource extends Resource
                 Forms\Components\Radio::make('start_time')->inline(false) 
                     ->label('Hora de la cita')
                     ->live()
+                    ->validationMessages([
+                        'required' => 'Selecciona una hora para la cita',
+                    ])
                     ->hiddenOn('edit')
                     ->required()
                     ->options(function (Get $get) {
@@ -294,7 +309,7 @@ class AppointmentResource extends Resource
                     ->modalSubmitAction(false)
                     ->modalCancelAction(false),
 
-                    Tables\Actions\Action::make('Historial')
+                    Tables\Actions\Action::make('Añadir')
                     ->icon('heroicon-o-document-text')
                     ->size('xl')
                     ->modalHeading('Registrar en el historial')
@@ -307,6 +322,18 @@ class AppointmentResource extends Resource
                         
                         if(!$pet){
                             throw new Exception('No se ha encontrado la mascota');
+                        }
+
+                        $existingRecord = MedicalRecord::where('appointment_id', $record->id)->first();
+                        if ($existingRecord) {
+                            Notification::make()
+                                ->title('Historial ya registrado')
+                                ->icon('heroicon-o-document-text')
+                                ->danger()
+                                ->body('El historial ya ha sido registrado para esta cita. No se puede registrar de nuevo.')
+                                ->seconds(5)
+                                ->send();
+                            return;
                         }
 
 
@@ -334,13 +361,37 @@ class AppointmentResource extends Resource
                             ->placeholder('Tratamiento aplicado')
                             ->required(),
                     ])
+                    ->visible(fn(Appointment $record) => !MedicalRecord::where('appointment_id', $record->id)->exists())
+                    ->hidden(!Auth::user()->isAdmin() && !Auth::user()->isVet()) 
                     ->successNotification(
                         Notification::make()
                              ->success()
                              ->title('Historial registrado')
                              ->body('El historial ha sido actualizado con los datos de la última cita'),
                      )
-                     ->successRedirectUrl(fn (): string => route('filament.dashboard.resources.medical-records.index'))
+                     ->successRedirectUrl(fn (): string => route('filament.dashboard.resources.medical-records.index')),
+
+                     Tables\Actions\Action::make('Ver Historial')
+                     ->icon('heroicon-o-document-text')
+                     ->label('Ver')
+                    ->size('xl')
+                    ->modalHeading('Historial Médico')
+                    ->form([
+                        Textarea::make('summary')
+                            ->label('Resumen')
+                            ->disabled()
+                            ->rows(3),
+                        Textarea::make('treatment')
+                            ->label('Tratamiento')
+                            ->disabled()
+                            ->rows(3),
+                    ])
+                    ->fillForm(fn(Appointment $record): array => [
+                        'summary' => $record->medicalRecord?->summary,
+                        'treatment' => $record->medicalRecord?->treatment,
+                    ])
+                    ->visible(fn(Appointment $record) => MedicalRecord::where('appointment_id', $record->id)->exists()),
+
             ])
 
             ->bulkActions([

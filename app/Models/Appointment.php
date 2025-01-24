@@ -66,9 +66,9 @@ class Appointment extends Model
         return $this->belongsTo(User::class, 'vet_id');
     }
 
-    public function medicalRecords()
+    public function medicalRecord()
     {
-        return $this->hasMany(MedicalRecord::class);
+        return $this->hasOne(MedicalRecord::class, 'appointment_id');
     }
 
     /* public function slot()
