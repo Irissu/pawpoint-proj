@@ -13,7 +13,8 @@ class Register extends BaseRegister
     {
         return $form
         ->schema([
-            $this->getNameFormComponent(),
+            $this->getNameFormComponent()
+            ->minLength(2),
             TextInput::make('surname')
             ->label('Apellidos')
             ->required(),
@@ -29,6 +30,12 @@ class Register extends BaseRegister
             ->label('Teléfono')
             ->numeric()
             ->length(9)
+            ->validationMessages([
+                'required' => 'El teléfono es obligatorio',
+                'digits' => 'El teléfono debe tener 9 dígitos',
+                'numeric' => 'El teléfono debe ser un número',
+                'length' => 'El teléfono debe tener 9 dígitos',
+            ])
             ->required(),
             TextInput::make('address')
             ->label('Dirección'),
