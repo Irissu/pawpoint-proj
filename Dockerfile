@@ -22,7 +22,4 @@ RUN composer install --no-dev --optimize-autoloader
 # Configurar permisos para storage y cache
 RUN chown -R www-data:www-data storage bootstrap/cache
 
-# Exponer el puerto 9000 (usado por PHP-FPM)
-EXPOSE 9000
-
 CMD ["php-fpm"]
