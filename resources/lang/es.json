@@ -6,5 +6,11 @@
     "Reset Password Notification": "Notificación de restablecimiento de contraseña",
     "Reset Password": "Restablecer contraseña",
     "This password reset link will expire in :count minutes.": "Este enlace de restablecimiento de contraseña caducará en :count minutos.",
-    "If you did not request a password reset, no further action is required.": "Si no solicitaste un restablecimiento de contraseña, no es necesario realizar ninguna acción."
+    "If you did not request a password reset, no further action is required.": "Si no solicitaste un restablecimiento de contraseña, no es necesario realizar ninguna acción.",
+    "passwords.sent": "Te hemos enviado por email el enlace para restablecer tu contraseña",
+    "validation.same": "El campo :attribute y :other deben coincidir.",
+    "validation.accepted": "El campo :attribute debe ser aceptado.",
+    "validation.confirmed": "La confirmación de :attribute no coincide.",
+    "validation.min.string": "El campo :attribute debe tener al menos :min caracteres.",
+    "password.reset": "Tu contraseña ha sido restablecida"
 }

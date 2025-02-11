@@ -59,12 +59,13 @@ class PetResource extends Resource
                     return $query->where('role', RoleUsers::User);
                 }) 
                 ->searchable()
-                ->preload() // carga los datos de la relación, si hay pocos datos esta bien, si hay muchos datos es mejor no usarlo. De momento lo dejo así
+                /* ->preload() */ // carga los datos de la relación, si hay pocos datos esta bien, si hay muchos datos es mejor no usarlo. De momento lo dejo así
                 ->createOptionForm([
                     Forms\Components\TextInput::make('name')
                     ->label('Nombre')
                     ->minLength(2)
                     ->maxLength(50)
+                    ->live()
                     ->required(),
                     Forms\Components\TextInput::make('surname')
                     ->label('Apellidos')
@@ -79,16 +80,10 @@ class PetResource extends Resource
                     ->label('Teléfono')
                     ->numeric()
                     ->length(9)
+                    ->live()
                     ->required(),
-                    Forms\Components\Hidden::make('password')
-                    ->default('') // Valor inicial vacío
-                    ->afterStateUpdated(function ($state, callable $set, $get) {
-                    // Generar la contraseña usando el nombre y el teléfono
-                    $name = $get('name') ?? '';
-                    $phone = $get('phone') ?? '';
-                    $password = strtolower(substr($name, 0, 3)) . substr($phone, -3);
-                    $set('password', bcrypt($password)); // Encriptar la contraseña
-                    }),
+                    Forms\Components\Hidden::make('is_creating_form_pet')
+                    ->default(true),
                     Forms\Components\TextInput::make('address')
                     ->label('Dirección'),
                     // rol automaticamente owner
@@ -96,8 +91,6 @@ class PetResource extends Resource
                     ->default(RoleUsers::User),
                 ])
                 ->required(),
-                    
-               
             ]);
     }
     public static function table(Table $table): Table

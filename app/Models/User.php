@@ -90,7 +90,7 @@ class User extends Authenticatable implements HasAvatar, MustVerifyEmail
     ];
 
     /**
-     * The attributes that should be hidden for serialization. 
+     * The attributes that should be hidden for serialization.  
      *
      * @var array<int, string>
      */
@@ -179,16 +179,16 @@ class User extends Authenticatable implements HasAvatar, MustVerifyEmail
         return "/storage/$this->img_path";
     }
 
-    public function sendEmailVerificationNotification()
+/*     public function sendEmailVerificationNotification()
     {
         $this->notify(new UserVerification);
-    }
+    } */
 
-/* HABILITAR EN PRODUCCIÓN:
+
      public function canAccessPanel(Panel $panel): bool
     {
         return $this->hasVerifiedEmail();
-    } */
+    } 
 
 
 }

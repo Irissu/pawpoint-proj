@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="{{ asset('images/pawpoint-pointer-teal.png') }}" type="image/png">
 
     <title>Pawpoint</title>
 
@@ -13,15 +14,14 @@
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/1.1.1/typed.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
 </head>
 
 
 <body>
-<main class="h-100 w-100 d-flex flex-column">
+<main class="d-flex flex-column">
+<div class="whole-header">
+  
 
 <!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg p-4 fixed-top">
@@ -49,8 +49,7 @@
         </li>
       </ul>
       <form class="d-flex">
-        <!-- <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"> -->
-        <button class="button-75" type="submit">Acceder</button>
+        <a href="#" class="button-75"><span class="text">Acceder</span></a>
       </form>
     </div>
   </div>
@@ -60,13 +59,11 @@
  <!-- LANDING  -->
 
  <header class="second-section flex-grow-1 d-flex flex-column justify-content-center mb-5" id="inicio">
-            <div class="container px-5">
-                <div class="row gx-5 align-items-center">
+            <div class="container px-4">
+                <div class="row gx-4 align-items-center">
                     <div class="col-xxl-6">
-                        <div class="d-flex justify-content-center mt-xxl-0">
-                            <div class="profile bg-gradient-primary-to-secondary d-none d-md-block">
+                        <div class="d-flex justify-content-center mt-xxl-0">       
                                 <img src="{{ asset('images/cathi.webp') }}" alt="Hero" width=auto height="750">
-                            </div>
                         </div>
                     </div>
 
@@ -76,30 +73,29 @@
                                 <div class="text-uppercase fs-6 mb-3">Quiere - Cuida - Confía</div>
                             </div>
                             <div class="fs-3 fw-light text-center">El mejor cuidado para tus mascotas</div>
-                            <h1 class="display-3 fw-bolder mb-5 text-center">
+                            <h1 class="display-4 fw-bolder mb-4 text-center">
                                 <span class="d-inline">Somos <span class="resalta">tu clínica</span> veterinaria</span>
                             </h1>
                             <div class="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-center mb-3">
-                                <button class="button-75" role="button"><span class="text">Iniciar sesión</span></button>
-                                <button class="button-75" role="button"><span class="text">Registrarse</span></button>
+                                <a href="#" class="button-75" role="button"><span class="text">Iniciar sesión</span></a>
+                                <a href="#" class="button-75" role="button"><span class="text">Registrarse</span></a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </header>
-        <br><br><br><br><br><br>
-        <section class="hero mt-5" id="nosotros">
-           
-        <div class="px-4 py-3 my-5 text-center">
-    <img class="d-block mx-auto mb-0" mt-3 src="{{ asset('images/pawpoint-pointer-teal.png') }}" alt="" width="72" height="auto">
+
+        </div> <!-- whole-header -->
+  
+        <section class="hero" id="nosotros">
+        <div class="px-4 py-3 my-2 mx-1 text-center">
+    <img class="d-block mx-auto mb-0" mt-3 src="{{ asset('images/pawpoint-pointer-teal.png') }}" alt="" width="62" height="auto">
     <h1 class="display-5 fw-bold text-body-emphasis">Nosotros</h1>
     <div class="col-lg-6 mx-auto">
       <p class="lead mb-4">Si has llegado hasta aquí, es porque tal vez estabas buscando una clinica veterinaria. ¡Bienvenido! estas en las mejores manos. Somos una clinica especializada en perros y gatos y llevamos mas de 10 años ofreciendo calidad y cuidado para tus masscotas, porque sabemos que son un miembro mas de la familia.</p>
-      <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
       </div>
     </div>
-  </div>
         </section>
 
         <section class="servicios" id="servicios">
@@ -175,35 +171,40 @@
     </div>
   </div>
 
-        </section> 
-
-        <section class="filosofia d-flex" id="filosofia"> <!-- seccion filosofia -->
-        <div class="columna-izquierda d-flex flex-column justify-content-center">
-        <h2 class="text-center">Filosofia</h2>
+  <section class="filosofia" id="filosofia">
+    <!-- Columna de Texto -->
+    <div class="columna-izquierda col-sm-12 col-md-6">
+        <h2>Filosofía</h2>
         <hr>
-        <p class="text-filosofia">Estamos muy concienciados con cuestiones como <strong>el abandono, las colonias felinas descontroladas</strong> y el en general los problemas que sufren <strong>los animales mas desfavorecidos</strong> que por desgracia no tienen una familia o no pueden asumir los costes de su salud. Es por eso que <strong>colaboramos con protectoras activamente</strong> ofreciendoles hasta un 40% de descuento en tratamientos respecto a los precios habituales. Además, si vienes con tu mascota y esta es adoptada, recibirás siempre un 10% de descuento en todos los tratamientos. También realizamos campañas de esterilización y trabajamos por el control de las colonias felinas en el barrio. <br><strong>Porque adoptar, es dar una nueva vida.</strong></p>
-        </div>
-        <div class="columna-derecha">
-        
-        </div>
-        </section> <!-- seccion filosofia -->
+        <p class="text-filosofia">
+            Estamos muy concienciados con cuestiones como <strong>el abandono, las colonias felinas descontroladas</strong> y los problemas que sufren <strong>los animales más desfavorecidos</strong>, que por desgracia no tienen una familia o no pueden asumir los costes de su salud. <br><br>
+            Es por eso que <strong>colaboramos con protectoras activamente</strong>, ofreciéndoles hasta un 40% de descuento en tratamientos. Además, si vienes con tu mascota adoptada, recibirás siempre un 10% de descuento en todos los tratamientos. <br><br>
+            También realizamos campañas de esterilización y trabajamos por el control de las colonias felinas. <br><strong>Porque adoptar es dar una nueva vida.</strong>
+        </p>
+    </div>
 
-        <section class="cita container py-5 pt-0 mt-0" id="cita"> <!-- seccion citas-->
+    <!-- Columna con la imagen -->
+    <div class="columna-derecha col-md-6 d-flex justify-content-center">
+        <img src="{{ asset('images/enfocar3.png') }}" alt="Veterinaria con perro" class="filosofia-img">
+    </div>
+</section> <!--filosofia-->
+
+        <section class="cita container py-5 pt-0 mt-5" id="cita"> <!-- seccion citas-->
   <div class="row align-items-center">
     <!-- Columna izquierda: Imagen -->
     <div class="col-md-6 text-center">
-      <img src="{{ asset('images/cita.png') }}" alt="un perro feliz con una corona un hueso y un comedero dibujados" class="img-fluid rounded">
+      <img src="{{ asset('images/cita.png') }}" alt="un perro feliz con una corona un hueso y un comedero dibujados" class="img-fluid">
     </div>
 
     <!-- Columna derecha: Título y texto -->
-    <div class="col-md-6">
+    <div class="flex-md-row col-md-6 cita-col-2">
       <h2 class="mb-3">Reserva tu cita</h2>
       <p>
         En PawPoint, ponemos a tu disposición un sistema fácil y rápido para reservar citas. 
-        Elige el día y la hora que más te convengan y nosotros nos encargamos del resto. 
-        ¡Porque tu mascota merece la mejor atención!
+        Elige el día y la hora que más te convengan y nosotros nos encargamos del resto, porque tu mascota merece la mejor atención.
+        Si lo prefieres, también <strong>puedes llamarnos al 666 66 66 66</strong> o enviarnos un email a <a href="mailto:hello@pawpoint.com">hello@pawpoint.com</a>.
       </p>
-      <button class="button-75 mt-4">Reservar cita</button>
+      <div class="button-contenedor-cita"><a href="#" class="button-cita button-75"><span class="text">Reservar cita</span></a> </div>
     </div>
   </div>
 
@@ -222,7 +223,9 @@
 
 <!-- Bootstrap JS -->
  <script src="{{ asset('js/custom.js') }} "></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+ <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+
 </body>
 
 

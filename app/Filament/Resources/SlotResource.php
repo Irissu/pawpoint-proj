@@ -44,26 +44,26 @@ class SlotResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('date')
                     ->label('Fecha')
-      /*               ->formatStateUsing(function ($state) {
+                     ->formatStateUsing(function ($state) {
                         return \Carbon\Carbon::parse($state)->format('d/m/Y');
-                    }) */
-                    ->dateTime()
+                    }) 
+                   /*  ->dateTime() */
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('start_time')
                     ->label('Hora de inicio')
-/*                     ->formatStateUsing(function ($state) {
+                     ->formatStateUsing(function ($state) {
                         return \Carbon\Carbon::parse($state)->format('H:i');
-                    }) */
-                    ->dateTime()
+                    }) 
+                    /* ->dateTime() */
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('end_time')
                     ->label('Hora de fin')
-        /*             ->formatStateUsing(function ($state) {
+                    ->formatStateUsing(function ($state) {
                         return \Carbon\Carbon::parse($state)->format('H:i'); 
-                    }) */
-                    ->dateTime()
+                    }) 
+                    /* ->dateTime() */
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('status')

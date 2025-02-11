@@ -23,7 +23,7 @@ class EditSchedule extends EditRecord
     {
         $schedule = $this->record;
     
-        // Estado original de is_active
+        // Estado original de is_active 
         $originalIsActive = $schedule->is_active;
         $newIsActive = $data['is_active'] ?? $originalIsActive;
     
@@ -97,6 +97,41 @@ class EditSchedule extends EditRecord
     {
         return $this->getResource()::getUrl('index');
     }
+
+        protected function beforeSave(): void
+    {
+        $schedule = $this->record; 
+
+        $vetId = $schedule->vet_id;
+        $dayOfWeek = $this->data['day_of_week'];
+        $startTime = $this->data['start_time'];
+        $endTime = $this->data['end_time'];
+
+        
+        $overlappingSchedule = \App\Models\Schedule::where('vet_id', $vetId)
+            ->where('day_of_week', $dayOfWeek)
+            ->where('id', '!=', $schedule->id) 
+            ->where(function ($query) use ($startTime, $endTime) {
+                $query->whereBetween('start_time', [$startTime, $endTime])
+                    ->orWhereBetween('end_time', [$startTime, $endTime])
+                    ->orWhere(function ($query) use ($startTime, $endTime) {
+                        $query->where('start_time', '<', $startTime)
+                                ->where('end_time', '>', $endTime);
+                    });
+            })
+            ->exists();
+
+        if ($overlappingSchedule) {
+            \Filament\Notifications\Notification::make()
+                ->title('Error al actualizar el horario')
+                ->body('El horario editado se solapa con otro horario existente.')
+                ->danger()
+                ->send();
+
+            $this->halt(); 
+        }
+    }
+
 
 
 

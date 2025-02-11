@@ -40,7 +40,7 @@ class MedicalRecordResource extends Resource
                 Forms\Components\Select::make('owner_id')
                     ->relationship('owner', 'name')
                     ->label('Dueño'),
-                Forms\Components\Datepicker::make('date')
+                Forms\Components\Datepicker::make('date') // en produccion es DatePicker
                     ->label('Fecha'),
                 Forms\Components\Textarea::make('summary')
                     ->label('Diagnóstico'),

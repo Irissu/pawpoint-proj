@@ -19,6 +19,14 @@ class CreatePet extends CreateRecord
             $data['owner_id'] = Auth::id();
         }
 
+        // Verifica si se está creando desde createOptionForm()
+        if (!empty($data['is_creating_from_pet'])) {
+        // Genera una contraseña segura aleatoria
+        $password = strtolower(substr($data['name'], 0, 3)) . substr($data['phone'], -3);
+        $data['password'] = bcrypt($password);
+        unset($data['is_creating_from_pet']); // Ya no necesitamos este campo en la BD
+    }
+
         return $data;
     }
 

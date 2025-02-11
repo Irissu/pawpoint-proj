@@ -49,6 +49,12 @@ class UserResource extends Resource
                 // ->tel() ?
                 ->numeric()
                 ->length(9)
+                ->validationMessages([
+                    'required' => 'El teléfono es obligatorio',
+                    'digits' => 'El teléfono debe tener 9 dígitos',
+                    'numeric' => 'El teléfono debe ser un número',
+                    'length' => 'El teléfono debe tener 9 dígitos',
+                ])
                 ->required(),
             Forms\Components\TextInput::make('address')
                 ->label('Dirección'),
@@ -67,6 +73,7 @@ class UserResource extends Resource
                 ->image()
                 ->imageEditor()
             ]);
+        
     }
 
     public static function table(Table $table): Table
@@ -77,7 +84,6 @@ class UserResource extends Resource
                     ->label('Avatar')
                     ->width(60)
                     ->height(60)
-                    // quiero ir a esta carpeta en defaultImage: [C:\xampp\htdocs\pawpointproj\public\storage]
                     ->defaultImageUrl(url(asset('storage/default-user.jpg')))
                     ->circular(),
                 Tables\Columns\TextColumn::make('name')

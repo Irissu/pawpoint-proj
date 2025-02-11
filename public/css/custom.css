@@ -2,13 +2,10 @@ html,
 body {
   height: 100%;
   margin: 0;
-  background-image: url(../images/header.webp);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
   font-size: 16px;
   font-family: "Raleway", sans-serif;
 }
+
 
 footer {
   margin: 0;
@@ -35,6 +32,16 @@ footer {
   backdrop-filter: blur(15px);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
+
+.navbar-open {
+  background-color: white !important;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-open .nav-link {
+  color: #000 !important;
+}
+
 
 .navbar .nav-link {
   margin: 0 10px;
@@ -78,32 +85,51 @@ footer {
   content: none;
 }
 
+.whole-header {
+  background-image: url(../images/header.webp);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
 main {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  max-width: 100%;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 .filosofia {
   display: flex;
-  min-height: 100%;
-  min-width: 100%;
-  height: 100vh;
-  background-image: url(../images/adopta2.jpg);
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center;
+  min-height: 80vh;
+  width: 100%;
+  background-color: #FFD700; /* Fondo amarillo */
+  align-items: stretch;
 }
 
 .filosofia .columna-izquierda {
-  flex: 2;
-  padding: 17rem;
+  flex: 1;
+  max-width: 50%;
+  padding: 3rem 5vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .filosofia .columna-derecha {
   flex: 1;
-  padding: 3rem;
-  text-align: left;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.filosofia-img {
+  max-width: 90%;
+  height: auto;
+  object-fit: contain; 
+  display: block;
 }
 
 .text-filosofia {
@@ -115,6 +141,7 @@ main {
 }
 
 .filosofia h2 {
+  text-align: right;
   font-size: 3rem;
   margin-bottom: 1rem;
 }
@@ -132,7 +159,11 @@ main {
 .cita p {
   font-size: 1.2em;
 }
-
+.cita img {
+  width: 100%;
+  min-width: 375px;
+  height: auto;
+}
 @keyframes pulse {
   from {
     transform: scale(0.9);
@@ -193,6 +224,13 @@ main {
   transform: scale(.9);
   opacity: .75;
 }
+.button-contenedor-cita {
+  display: flex;
+  margin-top: 2rem;
+}
+
+
+
 
 @media screen and (max-width: 991px) {
   .button-75 {
@@ -203,4 +241,56 @@ main {
   .button-75 span {
     line-height: 50px;
   }
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
 }
+  @media screen and (max-width: 768px) {
+    .filosofia {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .filosofia .columna-izquierda {
+        max-width: 100%;
+    }
+
+    .filosofia .columna-derecha {
+        justify-content: center;
+        margin-top: 2rem;
+    }
+
+    .filosofia-img {
+        max-width: 80%;
+    }
+
+    .second-section {
+      padding-top: 80px; /* Ajusta este valor según la altura de tu navbar */
+  }
+
+  .cita-col-2 {
+    text-align: center;
+  }
+  .button-cita{
+    margin: 0 auto;
+  }
+}
+
+@media screen and (max-width: 450px) {
+  .filosofia .columna-derecha {
+    margin-top: -40px;
+  }
+  .filosofia-img {
+    max-width: 90%;
+  }
+
+  .button-cita {
+    width: auto;
+  }
+}
+
+
+

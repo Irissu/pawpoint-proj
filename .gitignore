@@ -18,3 +18,9 @@ yarn-error.log
 /.vscode
 
 .codegpt
+Dockerfile
+docker-compose.yml
+nginx.conf
+conf.d/
+/conf.d
+/conf.d/default.conf

@@ -12,7 +12,6 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use App\Enums\RoleUsers;
 use App\Models\MedicalRecord;
-use Arr;
 use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -245,7 +244,10 @@ class AppointmentResource extends Resource
                         // Enviar notificación de cancelación
                         $record->owner->notify(new \App\Notifications\AppointmentCancelled($data['reason'], $record));
                     })
-                    ->visible(fn(Appointment $record) => $record->status != AppointmentStatus::Cancelled)
+                    ->visible(fn(Appointment $record) => 
+                    $record->status != AppointmentStatus::Cancelled &&
+                    !MedicalRecord::where('appointment_id', $record->id)->exists()
+                    )
                     ->hidden(!Auth::user()->isAdmin() && !Auth::user()->isVet()),
                 Tables\Actions\Action::make('Confirmar')
                     ->action(function (Appointment $record) {
@@ -390,6 +392,9 @@ class AppointmentResource extends Resource
                         'summary' => $record->medicalRecord?->summary,
                         'treatment' => $record->medicalRecord?->treatment,
                     ])
+                    ->disabledForm()
+                    ->modalSubmitAction(false)
+                    ->modalCancelAction(false)
                     ->visible(fn(Appointment $record) => MedicalRecord::where('appointment_id', $record->id)->exists()),
 
             ])

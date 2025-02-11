@@ -21,9 +21,33 @@ class CreateSchedule extends CreateRecord
         if (Auth::user()->isVet()) {
             $data['vet_id'] = Auth::id();
         }
+    
+        // Comprobar si hay un horario que se solape
+        $overlappingSchedule = \App\Models\Schedule::where('vet_id', $data['vet_id'])
+            ->where('day_of_week', $data['day_of_week'])
+            ->where(function ($query) use ($data) {
+                $query->whereBetween('start_time', [$data['start_time'], $data['end_time']])
+                      ->orWhereBetween('end_time', [$data['start_time'], $data['end_time']])
+                      ->orWhere(function ($query) use ($data) {
+                          $query->where('start_time', '<', $data['start_time'])
+                                ->where('end_time', '>', $data['end_time']);
+                      });
+            })
+            ->exists();
+    
+        if ($overlappingSchedule) {
+            \Filament\Notifications\Notification::make()
+                ->title('Error al crear el horario')
+                ->body('Ya existe un horario que se solapa con el que intentas crear.')
+                ->danger()
+                ->send();
+            
+            $this->halt();
+        }
+    
         return $data;
     }
-
+    
     protected function beforeCreate(): void
     {
         if (!Auth::user()->isVet() && !Auth::user()->isAdmin()) {
